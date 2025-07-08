@@ -1,0 +1,432 @@
+<template>
+    <div class="ai-sales-assistant-pro">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="title-container">
+                <h2 class="component-title">{componentSettings.title}</h2>
+                <div class="header-actions">
+                    <div class="settings-icon-container" onclick={handleComponentSettingsClick} title="Component Settings">
+                        <lightning-icon icon-name="utility:settings" alternative-text="Component Settings" size="small" class="settings-icon"></lightning-icon>
+                    </div>
+                    <div class="settings-icon-container" onclick={handleSettingsClick} title="AI Content Settings">
+                        <lightning-icon icon-name="utility:einstein" alternative-text="AI Settings" size="small" class="settings-icon"></lightning-icon>
+                    </div>
+                </div>
+            </div>
+            <p class="welcome-message">{componentSettings.welcomeMessage}</p>
+            
+            <!-- Info Section -->
+            <div if:true={componentSettings.showInfoSection} class="info-section">
+                <div class="info-box">
+                    <div class="info-icon" onclick={handleInfoToggle}>
+                        <lightning-icon icon-name="utility:info" alternative-text="Info" size="x-small"></lightning-icon>
+                    </div>
+                    <div if:true={showInfoBox} class="info-text">
+                        {componentSettings.infoMessage}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Configuration Status -->
+            <div class="config-status">
+                <lightning-icon icon-name="utility:database" alternative-text="Config status" size="x-small"></lightning-icon>
+                <span class="config-status-text">{configStatusMessage}</span>
+            </div>
+        </div>
+        
+        <!-- Content Sections -->
+        <div class="content-sections">
+            <!-- No Touch Section -->
+            <div class="section no-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={sectionConfig.noTouch.icon} alternative-text="No Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{sectionConfig.noTouch.title}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={noTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" data-item-id={item.title} onclick={handleItemClick}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text="Item" size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <div class="item-title-container">
+                                        <template if:false={isEditing('noTouch', index, 'title')}>
+                                            <h4 class="item-title editable-field" 
+                                                data-section="noTouch" 
+                                                data-index={index} 
+                                                data-field="title" 
+                                                data-value={item.title}
+                                                onclick={handleEditClick}>
+                                                {item.title}
+                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
+                                            </h4>
+                                        </template>
+                                        <template if:true={isEditing('noTouch', index, 'title')}>
+                                            <input type="text" 
+                                                   class="inline-edit-input" 
+                                                   value={editingValue}
+                                                   onchange={handleEditChange}
+                                                   onkeydown={handleEditSave}
+                                                   onblur={handleEditBlur} />
+                                        </template>
+                                    </div>
+                                    <div class="item-description-container">
+                                        <template if:false={isEditing('noTouch', index, 'description')}>
+                                            <p class="item-description editable-field"
+                                               data-section="noTouch" 
+                                               data-index={index} 
+                                               data-field="description" 
+                                               data-value={item.description}
+                                               onclick={handleEditClick}>
+                                                {item.description}
+                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
+                                            </p>
+                                        </template>
+                                        <template if:true={isEditing('noTouch', index, 'description')}>
+                                            <textarea class="inline-edit-input" 
+                                                      value={editingValue}
+                                                      onchange={handleEditChange}
+                                                      onkeydown={handleEditSave}
+                                                      onblur={handleEditBlur}></textarea>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div if:true={item.showButton} class="item-actions">
+                                    <lightning-button variant="brand" 
+                                                    label={item.buttonLabel} 
+                                                    data-url={item.buttonLink}
+                                                    onclick={handleButtonClick}
+                                                    class="action-button"
+                                                    style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div class="item-details" style="display: none;">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" data-content={item.detailContent}>
+                                    {item.detailContent}
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Low Touch Section -->
+            <div class="section low-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={sectionConfig.lowTouch.icon} alternative-text="Low Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{sectionConfig.lowTouch.title}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={lowTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" data-item-id={item.title} onclick={handleItemClick}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text="Item" size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <div class="item-title-container">
+                                        <template if:false={isEditing('lowTouch', index, 'title')}>
+                                            <h4 class="item-title editable-field" 
+                                                data-section="lowTouch" 
+                                                data-index={index} 
+                                                data-field="title" 
+                                                data-value={item.title}
+                                                onclick={handleEditClick}>
+                                                {item.title}
+                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
+                                            </h4>
+                                        </template>
+                                        <template if:true={isEditing('lowTouch', index, 'title')}>
+                                            <input type="text" 
+                                                   class="inline-edit-input" 
+                                                   value={editingValue}
+                                                   onchange={handleEditChange}
+                                                   onkeydown={handleEditSave}
+                                                   onblur={handleEditBlur} />
+                                        </template>
+                                    </div>
+                                    <div class="item-description-container">
+                                        <template if:false={isEditing('lowTouch', index, 'description')}>
+                                            <p class="item-description editable-field"
+                                               data-section="lowTouch" 
+                                               data-index={index} 
+                                               data-field="description" 
+                                               data-value={item.description}
+                                               onclick={handleEditClick}>
+                                                {item.description}
+                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
+                                            </p>
+                                        </template>
+                                        <template if:true={isEditing('lowTouch', index, 'description')}>
+                                            <textarea class="inline-edit-input" 
+                                                      value={editingValue}
+                                                      onchange={handleEditChange}
+                                                      onkeydown={handleEditSave}
+                                                      onblur={handleEditBlur}></textarea>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div if:true={item.showButton} class="item-actions">
+                                    <lightning-button variant="brand" 
+                                                    label={item.buttonLabel} 
+                                                    data-url={item.buttonLink}
+                                                    onclick={handleButtonClick}
+                                                    class="action-button"
+                                                    style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div class="item-details" style="display: none;">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" data-content={item.detailContent}>
+                                    {item.detailContent}
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- High Touch Section -->
+            <div class="section high-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={sectionConfig.highTouch.icon} alternative-text="High Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{sectionConfig.highTouch.title}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={highTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" data-item-id={item.title} onclick={handleItemClick}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text="Item" size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <div class="item-title-container">
+                                        <template if:false={isEditing('highTouch', index, 'title')}>
+                                            <h4 class="item-title editable-field" 
+                                                data-section="highTouch" 
+                                                data-index={index} 
+                                                data-field="title" 
+                                                data-value={item.title}
+                                                onclick={handleEditClick}>
+                                                {item.title}
+                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
+                                            </h4>
+                                        </template>
+                                        <template if:true={isEditing('highTouch', index, 'title')}>
+                                            <input type="text" 
+                                                   class="inline-edit-input" 
+                                                   value={editingValue}
+                                                   onchange={handleEditChange}
+                                                   onkeydown={handleEditSave}
+                                                   onblur={handleEditBlur} />
+                                        </template>
+                                    </div>
+                                    <div class="item-description-container">
+                                        <template if:false={isEditing('highTouch', index, 'description')}>
+                                            <p class="item-description editable-field"
+                                               data-section="highTouch" 
+                                               data-index={index} 
+                                               data-field="description" 
+                                               data-value={item.description}
+                                               onclick={handleEditClick}>
+                                                {item.description}
+                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
+                                            </p>
+                                        </template>
+                                        <template if:true={isEditing('highTouch', index, 'description')}>
+                                            <textarea class="inline-edit-input" 
+                                                      value={editingValue}
+                                                      onchange={handleEditChange}
+                                                      onkeydown={handleEditSave}
+                                                      onblur={handleEditBlur}></textarea>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div if:true={item.showButton} class="item-actions">
+                                    <lightning-button variant="brand" 
+                                                    label={item.buttonLabel} 
+                                                    data-url={item.buttonLink}
+                                                    onclick={handleButtonClick}
+                                                    class="action-button"
+                                                    style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div class="item-details" style="display: none;">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" data-content={item.detailContent}>
+                                    {item.detailContent}
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Site Visits Section (Optional) -->
+            <div if:true={showSiteVisits} class="section site-visits-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={sectionConfig.siteVisits.icon} alternative-text="Site Visits" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{sectionConfig.siteVisits.title}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={siteVisitItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" data-item-id={item.title} onclick={handleItemClick}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text="Item" size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <p class="item-description">{item.description}</p>
+                                </div>
+                                <div if:true={item.showButton} class="item-actions">
+                                    <lightning-button variant="brand" 
+                                                    label={item.buttonLabel} 
+                                                    data-url={item.buttonLink}
+                                                    onclick={handleButtonClick}
+                                                    class="action-button"
+                                                    style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div class="item-details" style="display: none;">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" data-content={item.detailContent}>
+                                    {item.detailContent}
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Content Settings Modal -->
+        <div if:true={showSettingsModal} class="settings-modal-overlay" onclick={handleSettingsClose}>
+            <div class="settings-modal" onclick={handleModalClick}>
+                <div class="settings-header">
+                    <h3 class="settings-title">AI Content Generation</h3>
+                    <lightning-icon 
+                        icon-name="utility:close" 
+                        alternative-text="Close" 
+                        size="small" 
+                        class="close-icon"
+                        onclick={handleSettingsClose}>
+                    </lightning-icon>
+                </div>
+                <div class="settings-content">
+                    <div class="settings-section">
+                        <label class="settings-label">Customer & Demo Context</label>
+                        <lightning-textarea 
+                            name="customerContext" 
+                            value={customerContext}
+                            placeholder="Describe the customer, their industry, business challenges, and the demo scenario..."
+                            onchange={handleCustomerContextChange}
+                            class="context-textarea">
+                        </lightning-textarea>
+                    </div>
+                    <div class="settings-section">
+                        <label class="settings-label">Component Purpose & Goals</label>
+                        <lightning-textarea 
+                            name="componentContext" 
+                            value={componentContext}
+                            placeholder="How should this component support the customer and demo objectives?"
+                            onchange={handleComponentContextChange}
+                            class="context-textarea">
+                        </lightning-textarea>
+                    </div>
+                    
+                    <!-- Configuration Status -->
+                    <div class="settings-section config-status-section">
+                        <div class="config-status-container">
+                            <template if:true={hasCustomContent}>
+                                <div class="config-status-active">
+                                    <lightning-icon icon-name="utility:success" alternative-text="Custom content active" size="x-small" class="status-icon"></lightning-icon>
+                                    <span class="status-text">Custom AI content is active</span>
+                                </div>
+                                <div class="config-actions">
+                                    <lightning-button 
+                                        variant="destructive-text" 
+                                        label="Reset to Defaults" 
+                                        onclick={handleResetToDefaults}
+                                        class="reset-button"
+                                        title="Reset to default content">
+                                    </lightning-button>
+                                </div>
+                            </template>
+                            <template if:false={hasCustomContent}>
+                                <div class="config-status-inactive">
+                                    <lightning-icon icon-name="utility:info" alternative-text="Using defaults" size="x-small" class="status-icon"></lightning-icon>
+                                    <span class="status-text">Using default content</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <lightning-button 
+                            variant="brand" 
+                            label="Generate AI Content" 
+                            onclick={handleGenerateContent}
+                            class="generate-button"
+                            style={buttonStyle}
+                            disabled={isGenerating}>
+                        </lightning-button>
+                        <lightning-button 
+                            variant="neutral" 
+                            label="Cancel" 
+                            onclick={handleSettingsClose}
+                            class="cancel-button">
+                        </lightning-button>
+                    </div>
+                    
+                    <!-- Generation Progress -->
+                    <div if:true={isGenerating} class="generation-progress">
+                        <div class="progress-header">
+                            <lightning-icon icon-name="utility:einstein" alternative-text="AI Processing" size="small" class="ai-icon"></lightning-icon>
+                            <span class="progress-title">AI is generating personalized content...</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style={progressBarStyle}></div>
+                            </div>
+                            <span class="progress-percentage">{generationProgress}%</span>
+                        </div>
+                        <div class="progress-status">
+                            <span class="status-text">{generationStatus}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Component Settings Modal -->
+        <div if:true={showComponentSettingsModal} class="settings-modal-overlay" onclick={handleComponentSettingsClose}>
+            <div class="settings-modal" onclick={handleModalClick}>
+                <div class="settings-header">
+                    <h3 class="settings-title">Component Settings</h3>
+                    <lightning-icon 
+                        icon-name="utility:close" 
+                        alternative-text="Close" 
+                        size="small" 
+                        class="close-icon"
+                        onclick={handleComponentSettingsClose}>
+                    </lightning-icon>
+                </div>
+                <div class="settings-content">
+                    <p class="settings-info">Component configuration is automatically managed. Use the AI Content settings to personalize your content.</p>
+                    <div class="component-info">
+                        <p><strong>Version:</strong> v3 (Self-Contained)</p>
+                        <p><strong>Persistence:</strong> Org-wide Custom Object storage</p>
+                        <p><strong>Editing:</strong> Click any content item to edit inline</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template> 
