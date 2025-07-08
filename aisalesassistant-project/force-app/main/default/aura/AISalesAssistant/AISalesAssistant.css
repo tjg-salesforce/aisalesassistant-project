@@ -1,0 +1,227 @@
+/* Custom styles for AI Sales Assistant */
+
+/* Dashboard Container Styling */
+.THIS .dashboard-container {
+    border: 1px solid #d8dde6 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.THIS .dashboard-container wave:waveDashboard {
+    width: 100% !important;
+    min-height: 300px !important;
+}
+
+/* Mobile responsive dashboard */
+@media (max-width: 768px) {
+    .THIS .dashboard-container {
+        margin: 0 -8px !important;
+        border-radius: 0 !important;
+    }
+    
+    .THIS .dashboard-container wave:waveDashboard {
+        min-height: 250px !important;
+    }
+}
+
+/* Make action buttons consistent width (75% of card) */
+.THIS .action-button {
+    width: 75% !important;
+    min-width: 200px;
+    height: 32px !important;
+    font-size: 0.7rem !important;
+    line-height: 1rem !important;
+}
+
+/* CSS Custom Properties for Dynamic Colors */
+.THIS {
+    --dynamic-button-color: #0576D3;
+    --dynamic-button-hover-color: #044A96;
+}
+
+/* Action buttons using CSS variables - targeting the button elements directly with higher specificity */
+.THIS button.slds-button.slds-button_brand.action-button,
+.THIS button.slds-button.slds-button_brand.custom-button {
+    background-color: var(--dynamic-button-color) !important;
+    border-color: var(--dynamic-button-color) !important;
+    color: white !important;
+}
+
+.THIS button.slds-button.slds-button_brand.action-button:hover,
+.THIS button.slds-button.slds-button_brand.custom-button:hover {
+    background-color: var(--dynamic-button-hover-color) !important;  
+    border-color: var(--dynamic-button-hover-color) !important;
+}
+
+/* Alternative approach - target lightning-button components directly */
+.THIS lightning-button.action-button,
+.THIS lightning-button.custom-button {
+    --slds-c-button-brand-color-background: var(--dynamic-button-color);
+    --slds-c-button-brand-color-border: var(--dynamic-button-color);
+}
+
+.THIS lightning-button.action-button:hover,
+.THIS lightning-button.custom-button:hover {
+    --slds-c-button-brand-color-background-hover: var(--dynamic-button-hover-color);
+    --slds-c-button-brand-color-border-hover: var(--dynamic-button-hover-color);
+}
+
+/* Refresh button using CSS variables */
+.THIS footer lightning-button button,
+.THIS footer .slds-button_neutral {
+    background-color: var(--dynamic-button-color) !important;
+    border-color: var(--dynamic-button-color) !important;
+    color: white !important;
+}
+
+.THIS footer lightning-button button:hover,
+.THIS footer .slds-button_neutral:hover {
+    background-color: var(--dynamic-button-hover-color) !important;
+    border-color: var(--dynamic-button-hover-color) !important;
+}
+
+/* Links using CSS variables */
+.THIS a,
+.THIS .slds-text-link {
+    color: var(--dynamic-button-color) !important;
+}
+
+.THIS a:hover,
+.THIS .slds-text-link:hover {
+    color: var(--dynamic-button-hover-color) !important;
+    text-decoration: underline !important;
+}
+
+/* Custom icon colors for different sections */
+.THIS .no-touch-icon {
+    --sds-c-icon-color-foreground-default: #04844b !important; /* Green for completed actions */
+}
+
+.THIS .low-touch-icon {
+    --sds-c-icon-color-foreground-default: #d47500 !important; /* Dark yellow for recommended actions */
+}
+
+.THIS .site-visits-icon {
+    --sds-c-icon-color-foreground-default: #0176d3 !important; /* Blue for site visits */
+}
+
+.THIS .site-visits-icon-yellow {
+    --sds-c-icon-color-foreground-default: #ffb75d !important; /* Yellow for second site visit */
+}
+
+.THIS .high-touch-icon {
+    --sds-c-icon-color-foreground-default: #762123 !important; /* Red for priority focus - matches button color */
+}
+
+/* Alternative method using direct color override */
+.THIS .no-touch-icon lightning-icon {
+    color: #04844b !important;
+}
+
+.THIS .low-touch-icon lightning-icon {
+    color: #d47500 !important;
+}
+
+.THIS .site-visits-icon lightning-icon {
+    color: #0176d3 !important;
+}
+
+.THIS .site-visits-icon-yellow lightning-icon {
+    color: #ffb75d !important;
+}
+
+.THIS .high-touch-icon lightning-icon {
+    color: #762123 !important;
+}
+
+/* Smaller task titles for mobile - slightly larger */
+.THIS .task-title {
+    font-size: 0.8rem !important;
+    line-height: 1.2rem !important;
+    font-weight: 500 !important;
+}
+
+/* Task description text - same size as title */
+.THIS .task-description {
+    font-size: 0.8rem !important;
+    line-height: 1.2rem !important;
+    color: #706e6b !important;
+}
+
+/* Info section text - same size as task titles */
+.THIS .info-section {
+    font-size: 0.8rem !important;
+    line-height: 1.2rem !important;
+}
+
+/* Detail section text - same size as task descriptions */
+.THIS .detail-title {
+    font-size: 0.8rem !important;
+    line-height: 1.2rem !important;
+    font-weight: 600 !important;
+}
+
+.THIS .detail-content {
+    font-size: 0.8rem !important;
+    line-height: 1.2rem !important;
+    color: #706e6b !important;
+}
+
+/* Add padding to task boxes */
+.THIS .task-box {
+    padding: 10px !important;
+}
+
+/* Remove horizontal dividers between tasks */
+.THIS .slds-has-dividers_bottom-space > li {
+    border-bottom: none !important;
+}
+
+/* Accordion Section Styling */
+.THIS .accordion-section {
+    cursor: pointer !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.THIS .accordion-section:hover {
+    background-color: #f3f2f2 !important;
+}
+
+.THIS .accordion-section.open {
+    background-color: #eef1f6 !important;
+}
+
+.THIS .accordion-content {
+    max-height: 0 !important;
+    overflow: hidden !important;
+    transition: max-height 0.3s ease-in-out !important;
+}
+
+.THIS .accordion-content.open {
+    max-height: 2000px !important;
+}
+
+/* Section header with chevron */
+.THIS .section-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 8px 12px !important;
+}
+
+.THIS .section-title {
+    display: flex !important;
+    align-items: center !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+}
+
+.THIS .chevron-icon {
+    transition: transform 0.2s ease !important;
+}
+
+.THIS .chevron-icon.open {
+    transform: rotate(180deg) !important;
+}

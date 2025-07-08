@@ -1,0 +1,536 @@
+<template>
+    <div class="ai-sales-assistant-pro">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="title-container">
+                <h2 class="component-title">{componentTitle}</h2>
+                <div class="settings-icon-container">
+                    <lightning-icon 
+                        icon-name="utility:threedots_vertical" 
+                        alternative-text="Settings" 
+                        size="small" 
+                        class="settings-icon"
+                        onclick={handleSettingsClick}
+                        title="Configure AI Content Generation">
+                    </lightning-icon>
+                </div>
+            </div>
+            <p class="welcome-message">{welcomeMessage}</p>
+            
+            <!-- Info Section -->
+            <div if:true={showInfoSection} class="info-section">
+                <div class="info-box">
+                    <div class="info-icon" onclick={handleInfoToggle}>
+                        <lightning-icon icon-name="utility:info" alternative-text="Info" size="x-small"></lightning-icon>
+                    </div>
+                    <div if:true={showInfoBox} class="info-text">
+                        {infoMessage}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Modal -->
+        <div if:true={showSettingsModal} class="settings-modal-overlay" onclick={handleModalOverlayClick}>
+            <div class="settings-modal" onclick={handleModalClick}>
+                <div class="settings-header">
+                    <h3 class="settings-title">AI Content Generation Settings</h3>
+                    <lightning-icon 
+                        icon-name="utility:close" 
+                        alternative-text="Close" 
+                        size="small" 
+                        class="close-icon"
+                        onclick={handleSettingsClose}>
+                    </lightning-icon>
+                </div>
+                <div class="settings-content">
+                    <div class="settings-section">
+                        <label class="settings-label">Customer & Demo Context</label>
+                        <lightning-textarea 
+                            name="customerContext" 
+                            value={customerContext}
+                            placeholder="Describe the customer, their industry, business challenges, and the demo scenario..."
+                            onchange={handleCustomerContextChange}
+                            class="context-textarea">
+                        </lightning-textarea>
+                    </div>
+                    <div class="settings-section">
+                        <label class="settings-label">Component Purpose & Goals</label>
+                        <lightning-textarea 
+                            name="componentContext" 
+                            value={componentContext}
+                            placeholder="How should this component support the customer and demo objectives?"
+                            onchange={handleComponentContextChange}
+                            class="context-textarea">
+                        </lightning-textarea>
+                    </div>
+                    
+                    <!-- AI Content Status Section -->
+                    <div class="settings-section ai-status-section">
+                        <div class="ai-status-container">
+                            <template if:true={hasAIContent}>
+                                <div class="ai-status-active">
+                                    <lightning-icon icon-name="utility:success" alternative-text="AI content active" size="x-small" class="status-icon"></lightning-icon>
+                                    <span class="status-text">AI-generated content is active</span>
+                                </div>
+                                <div class="ai-status-actions">
+                                    <lightning-button 
+                                        variant="brand" 
+                                        label="Copy to App Builder" 
+                                        onclick={handleCopyToAppBuilder}
+                                        class="copy-button"
+                                        title="Copy AI content to design attributes">
+                                    </lightning-button>
+                                    <lightning-button 
+                                        variant="neutral" 
+                                        label="Reset to Original" 
+                                        onclick={handleResetToOriginal}
+                                        class="reset-button"
+                                        title="Reset to original design attributes">
+                                    </lightning-button>
+                                </div>
+                                
+                                <!-- Export/Import for Demo Org Persistence -->
+                                <div class="demo-persistence-section">
+                                    <div class="demo-persistence-title">
+                                        <lightning-icon icon-name="utility:database" alternative-text="Demo persistence" size="x-small"></lightning-icon>
+                                        <span>Demo Org Persistence</span>
+                                    </div>
+                                    <div class="demo-persistence-actions">
+                                        <lightning-button 
+                                            variant="neutral" 
+                                            label="Export Config" 
+                                            onclick={handleExportConfig}
+                                            class="export-button"
+                                            title="Export configuration for cross-browser/device use">
+                                        </lightning-button>
+                                        <lightning-button 
+                                            variant="neutral" 
+                                            label="Import Config" 
+                                            onclick={handleImportConfig}
+                                            class="import-button"
+                                            title="Import configuration from clipboard">
+                                        </lightning-button>
+                                    </div>
+                                    <div class="demo-persistence-info">
+                                        <p class="persistence-help">💡 Export your AI content to reuse across browsers, devices, or after long periods of inactivity.</p>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={hasAIContent}>
+                                <div class="ai-status-inactive">
+                                    <lightning-icon icon-name="utility:info" alternative-text="Using defaults" size="x-small" class="status-icon"></lightning-icon>
+                                    <span class="status-text">Using default content</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <lightning-button 
+                            variant="brand" 
+                            label="Generate Content" 
+                            onclick={handleGenerateContent}
+                            class="generate-button"
+                            style={buttonStyle}
+                            disabled={isGenerating}>
+                        </lightning-button>
+                        <lightning-button 
+                            variant="neutral" 
+                            label="Generate in Background" 
+                            onclick={handleGenerateContentInBackground}
+                            class="background-button"
+                            disabled={isGenerating}
+                            title="Continue working while AI generates content">
+                        </lightning-button>
+                        <lightning-button 
+                            variant="neutral" 
+                            label="Cancel" 
+                            onclick={handleSettingsClose}
+                            class="cancel-button">
+                        </lightning-button>
+                    </div>
+                    
+                    <!-- Enhanced Generation Progress -->
+                    <div if:true={isGenerating} class="generation-progress">
+                        <div class="progress-header">
+                            <lightning-icon icon-name="utility:steps" alternative-text="AI Processing" size="small" class="ai-icon"></lightning-icon>
+                            <span class="progress-title">AI is analyzing your customer context...</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style={progressBarStyle}></div>
+                            </div>
+                            <span class="progress-percentage">{generationProgress}%</span>
+                        </div>
+                        <div class="progress-status">
+                            <span class="status-text">{generationStatus}</span>
+                        </div>
+                        <div class="progress-details">
+                            <p class="progress-info">🔍 Inferring industry from company context</p>
+                            <p class="progress-info">🎯 Identifying business challenges and opportunities</p>
+                            <p class="progress-info">💡 Creating personalized sales scenarios</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Background Processing Indicator -->
+                    <div if:true={isBackgroundProcessing} class="background-indicator">
+                        <lightning-icon icon-name="utility:background_operation" alternative-text="Background processing" size="small" class="bg-icon"></lightning-icon>
+                        <span class="bg-text">AI is generating content in the background...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Copy to App Builder Modal -->
+        <div if:true={showCopyModal} class="copy-modal-overlay" onclick={handleCopyModalOverlayClick}>
+            <div class="copy-modal" onclick={handleCopyModalClick}>
+                <div class="copy-modal-header">
+                    <h2 class="copy-modal-title">Copy to App Builder</h2>
+                    <lightning-icon 
+                        icon-name="utility:close" 
+                        alternative-text="Close" 
+                        size="small" 
+                        class="close-icon"
+                        onclick={handleCopyModalClose}>
+                    </lightning-icon>
+                </div>
+                <div class="copy-modal-content">
+                    <div class="copy-instructions">
+                        <p>Click any field below to copy its value to your clipboard, then paste it into the corresponding design attribute in App Builder.</p>
+                    </div>
+                    
+                    <template if:true={appBuilderMapping}>
+                        <!-- No Touch Section -->
+                        <template if:true={appBuilderMapping.noTouch}>
+                            <div class="copy-section">
+                                <h3 class="copy-section-title">🎯 No Touch Section</h3>
+                                                                 <template for:each={appBuilderMapping.noTouch} for:item="item" for:index="index">
+                                     <div key={item.title.field} class="copy-item">
+                                         <div class="copy-item-title">{item.title.field}</div>
+                                        <div class="copy-fields">
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.title.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.title.field}
+                                                     data-value={item.title.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.title.value}
+                                                </div>
+                                            </div>
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.description.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.description.field}
+                                                     data-value={item.description.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.description.value}
+                                                </div>
+                                            </div>
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.icon.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.icon.field}
+                                                     data-value={item.icon.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.icon.value}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        
+                        <!-- Low Touch Section -->
+                        <template if:true={appBuilderMapping.lowTouch}>
+                            <div class="copy-section">
+                                <h3 class="copy-section-title">⚡ Low Touch Section</h3>
+                                                                 <template for:each={appBuilderMapping.lowTouch} for:item="item" for:index="index">
+                                     <div key={item.title.field} class="copy-item">
+                                         <div class="copy-item-title">{item.title.field}</div>
+                                        <div class="copy-fields">
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.title.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.title.field}
+                                                     data-value={item.title.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.title.value}
+                                                </div>
+                                            </div>
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.description.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.description.field}
+                                                     data-value={item.description.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.description.value}
+                                                </div>
+                                            </div>
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.icon.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.icon.field}
+                                                     data-value={item.icon.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.icon.value}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        
+                        <!-- High Touch Section -->
+                        <template if:true={appBuilderMapping.highTouch}>
+                            <div class="copy-section">
+                                <h3 class="copy-section-title">🎯 High Touch Section</h3>
+                                <template for:each={appBuilderMapping.highTouch} for:item="item" for:index="index">
+                                    <div key={item.title.field} class="copy-item">
+                                        <div class="copy-item-title">Item {index} (1-based)</div>
+                                        <div class="copy-fields">
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.title.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.title.field}
+                                                     data-value={item.title.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.title.value}
+                                                </div>
+                                            </div>
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.description.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.description.field}
+                                                     data-value={item.description.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.description.value}
+                                                </div>
+                                            </div>
+                                            <div class="copy-field">
+                                                <label class="copy-field-label">{item.icon.label}</label>
+                                                <div class="copy-field-value" 
+                                                     data-field={item.icon.field}
+                                                     data-value={item.icon.value}
+                                                     onclick={handleCopyField}>
+                                                    {item.icon.value}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Sections -->
+        <div class="content-sections">
+            <!-- No Touch Section -->
+            <div class="section no-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={noTouchSectionIcon} alternative-text="No Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{noTouchSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={noTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="noTouch" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <lightning-button 
+                                        variant="brand" 
+                                        label={item.buttonLabel} 
+                                        onclick={handleButtonClick}
+                                        data-link={item.buttonLink}
+                                        class="action-button"
+                                        style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Low Touch Section -->
+            <div class="section low-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={lowTouchSectionIcon} alternative-text="Low Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{lowTouchSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={lowTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="lowTouch" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <template if:true={item.showButton}>
+                                        <lightning-button 
+                                            variant="brand" 
+                                            label={item.buttonLabel} 
+                                            onclick={handleButtonClick}
+                                            data-link={item.buttonLink}
+                                            class="action-button"
+                                            style={buttonStyle}>
+                                        </lightning-button>
+                                    </template>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- High Touch Section -->
+            <div class="section high-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={highTouchSectionIcon} alternative-text="High Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{highTouchSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={highTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="highTouch" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <lightning-button 
+                                        variant="brand" 
+                                        label={item.buttonLabel} 
+                                        onclick={handleButtonClick}
+                                        data-link={item.buttonLink}
+                                        class="action-button"
+                                        style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Site Visits Section -->
+            <div if:true={showSiteVisitsSection} class="section site-visits-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={siteVisitsSectionIcon} alternative-text="Site Visits" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{siteVisitsSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={siteVisitItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="siteVisits" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <lightning-button 
+                                        variant="brand" 
+                                        label={item.buttonLabel} 
+                                        onclick={handleButtonClick}
+                                        data-link={item.buttonLink}
+                                        class="action-button"
+                                        style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Refresh Section -->
+        <div class="refresh-section" onclick={handleRefresh} role="button" tabindex="0" onkeydown={handleRefreshKeydown}>
+            <svg class="refresh-icon" viewBox="0 0 520 520" width="16" height="16">
+                <path d="M465 40h-30c-8 0-15 7-15 15v70c0 9-5 13-12 7l-10-10a210 210 0 10-12 309c7-6 7-16 1-22l-21-21c-5-5-14-6-20-1a152 152 0 01-172 14 152 152 0 0177-281 150 150 0 01118 58c3 8-4 12-13 12h-70c-8 0-15 7-15 15v31c0 8 6 14 14 14h183c7 0 13-6 13-13V55c-1-8-8-15-16-15z"></path>
+            </svg>
+            <span class="refresh-text">Refresh Insights</span>
+        </div>
+    </div>
+</template> 

@@ -1,0 +1,226 @@
+<template>
+    <div class="ai-sales-assistant-pro">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h2 class="component-title">{componentTitle}</h2>
+            <p class="welcome-message">{welcomeMessage}</p>
+            
+            <!-- Info Section -->
+            <div if:true={showInfoSection} class="info-section">
+                <div class="info-box">
+                    <div class="info-icon" onclick={handleInfoToggle}>
+                        <lightning-icon icon-name="utility:info" alternative-text="Info" size="x-small"></lightning-icon>
+                    </div>
+                    <div if:true={showInfoBox} class="info-text">
+                        {infoMessage}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Sections -->
+        <div class="content-sections">
+            <!-- No Touch Section -->
+            <div class="section no-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={noTouchSectionIcon} alternative-text="No Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{noTouchSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={noTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="noTouch" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <lightning-button 
+                                        variant="brand" 
+                                        label={item.buttonLabel} 
+                                        onclick={handleButtonClick}
+                                        data-link={item.buttonLink}
+                                        class="action-button"
+                                        style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Low Touch Section -->
+            <div class="section low-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={lowTouchSectionIcon} alternative-text="Low Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{lowTouchSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={lowTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="lowTouch" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <template if:true={item.showButton}>
+                                        <lightning-button 
+                                            variant="brand" 
+                                            label={item.buttonLabel} 
+                                            onclick={handleButtonClick}
+                                            data-link={item.buttonLink}
+                                            class="action-button"
+                                            style={buttonStyle}>
+                                        </lightning-button>
+                                    </template>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- High Touch Section -->
+            <div class="section high-touch-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={highTouchSectionIcon} alternative-text="High Touch" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{highTouchSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={highTouchItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="highTouch" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <lightning-button 
+                                        variant="brand" 
+                                        label={item.buttonLabel} 
+                                        onclick={handleButtonClick}
+                                        data-link={item.buttonLink}
+                                        class="action-button"
+                                        style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            
+            <!-- Site Visits Section -->
+            <div if:true={showSiteVisitsSection} class="section site-visits-section">
+                <div class="section-header">
+                    <lightning-icon icon-name={siteVisitsSectionIcon} alternative-text="Site Visits" size="small" class="section-icon"></lightning-icon>
+                    <h3 class="section-title">{siteVisitsSectionTitle}</h3>
+                </div>
+                <div class="section-content">
+                    <template for:each={siteVisitItems} for:item="item" for:index="index">
+                        <div key={item.title} class="content-item" if:false={item.hidden}>
+                            <div class="item-header">
+                                <div class="item-icon-container">
+                                    <lightning-icon icon-name={item.icon} alternative-text={item.title} size="small" class="item-icon"></lightning-icon>
+                                </div>
+                                <div class="item-content">
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <div class="item-description-container">
+                                        <p class="item-description">{item.description}</p>
+                                        <lightning-icon 
+                                            icon-name="utility:info" 
+                                            alternative-text="More details" 
+                                            size="x-small" 
+                                            class="item-info-icon"
+                                            onclick={handleItemClick}
+                                            data-section="siteVisits" 
+                                            data-index={index}>
+                                        </lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <lightning-button 
+                                        variant="brand" 
+                                        label={item.buttonLabel} 
+                                        onclick={handleButtonClick}
+                                        data-link={item.buttonLink}
+                                        class="action-button"
+                                        style={buttonStyle}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                            <div if:true={item.expanded} class="item-details">
+                                <h5 class="detail-title">{item.detailTitle}</h5>
+                                <div class="detail-content" lwc:dom="manual"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Refresh Section -->
+        <div class="refresh-section" onclick={handleRefresh} role="button" tabindex="0" onkeydown={handleRefreshKeydown}>
+            <svg class="refresh-icon" viewBox="0 0 520 520" width="16" height="16">
+                <path d="M465 40h-30c-8 0-15 7-15 15v70c0 9-5 13-12 7l-10-10a210 210 0 10-12 309c7-6 7-16 1-22l-21-21c-5-5-14-6-20-1a152 152 0 01-172 14 152 152 0 0177-281 150 150 0 01118 58c3 8-4 12-13 12h-70c-8 0-15 7-15 15v31c0 8 6 14 14 14h183c7 0 13-6 13-13V55c-1-8-8-15-16-15z"></path>
+            </svg>
+            <span class="refresh-text">Refresh Insights</span>
+        </div>
+    </div>
+</template> 

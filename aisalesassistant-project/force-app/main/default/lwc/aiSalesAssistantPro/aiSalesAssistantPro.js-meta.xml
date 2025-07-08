@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>59.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__HomePage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__Tab</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage">
+            
+            <!-- ============================================== -->
+            <!-- COMPONENT SETTINGS                            -->  
+            <!-- ============================================== -->
+            <property name="componentTitle" type="String" default="AI Sales Assistant Pro" label="🔧 Component Title" description="The title displayed at the top of the component"/>
+            <property name="welcomeMessage" type="String" default="Hi there, here's your AI-powered sales overview:" label="🔧 Welcome Message" description="Personalized welcome message for the sales rep"/>
+            <property name="buttonColor" type="String" default="0576D3" label="🔧 Button Color" description="Button color as hex code (with or without #). Default: 0576D3"/>
+            
+            <!-- ============================================== -->
+            <!-- INFO SECTION                                  -->
+            <!-- ============================================== -->
+            <property name="showInfoSection" type="Boolean" default="false" label="ℹ️ Show Info Section" description="Show the info section under the welcome message"/>
+            <property name="infoMessage" type="String" default="Managing 2x more accounts this quarter. AI has analyzed your portfolio to help you prioritize." label="ℹ️ Info Message" description="Information message displayed in the blue info box"/>
+            
+            <!-- ============================================== -->
+            <!-- VERTICAL CONFIGURATION (ADMIN ONLY)           -->
+            <!-- ============================================== -->
+            <property name="primaryVertical" type="String" default="Manufacturing" label="⚙️ Primary Vertical" description="Primary industry vertical (admin setting)" datasource="Manufacturing,Auto,Energy,Retail,Consumer Goods"/>
+            <property name="subVertical" type="String" default="Discrete - OEM" label="⚙️ Sub-Vertical" description="Industry sub-vertical (admin setting)"/>
+            <property name="customerType" type="String" default="B2B" label="⚙️ Customer Type" description="Customer type (admin setting)" datasource="B2B,B2C"/>
+            
+            <!-- ============================================== -->
+            <!-- SECTION CONTROLS                              -->
+            <!-- ============================================== -->
+            <property name="showSiteVisitsSection" type="Boolean" default="false" label="🏢 Show Site Visits Section" description="Show the optional site visits section"/>
+            
+            <!-- ============================================== -->
+            <!-- SECTION HEADERS                               -->
+            <!-- ============================================== -->
+            <property name="noTouchSectionTitle" type="String" default="AI Completed Actions (No Touch)" label="📋 No Touch Section Title" description="Title for the no-touch section"/>
+            <property name="noTouchSectionIcon" type="String" default="utility:announcement" label="📋 No Touch Section Icon" description="Icon for the no-touch section header"/>
+            <property name="lowTouchSectionTitle" type="String" default="Recommended Actions (Low Touch)" label="📋 Low Touch Section Title" description="Title for the low-touch section"/>
+            <property name="lowTouchSectionIcon" type="String" default="utility:check" label="📋 Low Touch Section Icon" description="Icon for the low-touch section header"/>
+            <property name="highTouchSectionTitle" type="String" default="Priority Focus (High Touch)" label="📋 High Touch Section Title" description="Title for the high-touch section"/>
+            <property name="highTouchSectionIcon" type="String" default="utility:high_velocity_sales" label="📋 High Touch Section Icon" description="Icon for the high-touch section header"/>
+            <property name="siteVisitsSectionTitle" type="String" default="Site Visits" label="📋 Site Visits Section Title" description="Title for the site visits section"/>
+            <property name="siteVisitsSectionIcon" type="String" default="utility:location" label="📋 Site Visits Section Icon" description="Icon for the site visits section header"/>
+            
+            <!-- ============================================== -->
+            <!-- NO TOUCH ITEMS                                -->
+            <!-- ============================================== -->
+            <property name="noTouch1Title" type="String" label="🤖 No Touch Item 1 - Title" description="Title for no-touch item 1"/>
+            <property name="noTouch1Desc" type="String" label="🤖 No Touch Item 1 - Description" description="Description for no-touch item 1"/>
+            <property name="noTouch1Icon" type="String" default="utility:success" label="🤖 No Touch Item 1 - Icon" description="Icon for no-touch item 1"/>
+            <property name="noTouch1ButtonLabel" type="String" default="View Report" label="🤖 No Touch Item 1 - Button Label" description="Button label for no-touch item 1"/>
+            <property name="noTouch1ButtonLink" type="String" label="🤖 No Touch Item 1 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="noTouch1DetailTitle" type="String" label="🤖 No Touch Item 1 - Detail Title" description="Title for no-touch item 1 detail section"/>
+            <property name="noTouch1DetailContent" type="String" label="🤖 No Touch Item 1 - Detail Content" description="Detailed content for no-touch item 1"/>
+            
+            <property name="noTouch2Title" type="String" label="🤖 No Touch Item 2 - Title" description="Title for no-touch item 2"/>
+            <property name="noTouch2Desc" type="String" label="🤖 No Touch Item 2 - Description" description="Description for no-touch item 2"/>
+            <property name="noTouch2Icon" type="String" default="utility:email" label="🤖 No Touch Item 2 - Icon" description="Icon for no-touch item 2"/>
+            <property name="noTouch2ButtonLabel" type="String" default="View Alerts" label="🤖 No Touch Item 2 - Button Label" description="Button label for no-touch item 2"/>
+            <property name="noTouch2ButtonLink" type="String" label="🤖 No Touch Item 2 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="noTouch2DetailTitle" type="String" label="🤖 No Touch Item 2 - Detail Title" description="Title for no-touch item 2 detail section"/>
+            <property name="noTouch2DetailContent" type="String" label="🤖 No Touch Item 2 - Detail Content" description="Detailed content for no-touch item 2"/>
+            
+            <property name="noTouch3Title" type="String" label="🤖 No Touch Item 3 - Title" description="Title for no-touch item 3"/>
+            <property name="noTouch3Desc" type="String" label="🤖 No Touch Item 3 - Description" description="Description for no-touch item 3"/>
+            <property name="noTouch3Icon" type="String" default="utility:knowledge_base" label="🤖 No Touch Item 3 - Icon" description="Icon for no-touch item 3"/>
+            <property name="noTouch3ButtonLabel" type="String" default="View Analysis" label="🤖 No Touch Item 3 - Button Label" description="Button label for no-touch item 3"/>
+            <property name="noTouch3ButtonLink" type="String" label="🤖 No Touch Item 3 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="noTouch3DetailTitle" type="String" label="🤖 No Touch Item 3 - Detail Title" description="Title for no-touch item 3 detail section"/>
+            <property name="noTouch3DetailContent" type="String" label="🤖 No Touch Item 3 - Detail Content" description="Detailed content for no-touch item 3"/>
+            
+            <!-- ============================================== -->
+            <!-- LOW TOUCH ITEMS                               -->
+            <!-- ============================================== -->
+            <property name="lowTouch1Title" type="String" label="👆 Low Touch Item 1 - Title" description="Title for low-touch item 1"/>
+            <property name="lowTouch1Desc" type="String" label="👆 Low Touch Item 1 - Description" description="Description for low-touch item 1"/>
+            <property name="lowTouch1Icon" type="String" default="utility:priority" label="👆 Low Touch Item 1 - Icon" description="Icon for low-touch item 1"/>
+            <property name="lowTouch1ButtonLabel" type="String" label="👆 Low Touch Item 1 - Button Label" description="Button label for low-touch item 1"/>
+            <property name="lowTouch1ButtonLink" type="String" label="👆 Low Touch Item 1 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="lowTouch1DetailTitle" type="String" label="👆 Low Touch Item 1 - Detail Title" description="Title for low-touch item 1 detail section"/>
+            <property name="lowTouch1DetailContent" type="String" label="👆 Low Touch Item 1 - Detail Content" description="Detailed content for low-touch item 1"/>
+            
+            <property name="lowTouch2Title" type="String" label="👆 Low Touch Item 2 - Title" description="Title for low-touch item 2"/>
+            <property name="lowTouch2Desc" type="String" label="👆 Low Touch Item 2 - Description" description="Description for low-touch item 2"/>
+            <property name="lowTouch2Icon" type="String" default="utility:approval" label="👆 Low Touch Item 2 - Icon" description="Icon for low-touch item 2"/>
+            <property name="lowTouch2ButtonLabel" type="String" label="👆 Low Touch Item 2 - Button Label" description="Button label for low-touch item 2"/>
+            <property name="lowTouch2ButtonLink" type="String" label="👆 Low Touch Item 2 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="lowTouch2DetailTitle" type="String" label="👆 Low Touch Item 2 - Detail Title" description="Title for low-touch item 2 detail section"/>
+            <property name="lowTouch2DetailContent" type="String" label="👆 Low Touch Item 2 - Detail Content" description="Detailed content for low-touch item 2"/>
+            
+            <property name="lowTouch3Title" type="String" label="👆 Low Touch Item 3 - Title" description="Title for low-touch item 3"/>
+            <property name="lowTouch3Desc" type="String" label="👆 Low Touch Item 3 - Description" description="Description for low-touch item 3"/>
+            <property name="lowTouch3Icon" type="String" default="utility:groups" label="👆 Low Touch Item 3 - Icon" description="Icon for low-touch item 3"/>
+            <property name="lowTouch3ButtonLabel" type="String" label="👆 Low Touch Item 3 - Button Label" description="Button label for low-touch item 3"/>
+            <property name="lowTouch3ButtonLink" type="String" label="👆 Low Touch Item 3 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="lowTouch3DetailTitle" type="String" label="👆 Low Touch Item 3 - Detail Title" description="Title for low-touch item 3 detail section"/>
+            <property name="lowTouch3DetailContent" type="String" label="👆 Low Touch Item 3 - Detail Content" description="Detailed content for low-touch item 3"/>
+            
+            <!-- ============================================== -->
+            <!-- HIGH TOUCH ITEMS                              -->
+            <!-- ============================================== -->
+            <property name="highTouch1Title" type="String" label="🔥 High Touch Item 1 - Title" description="Title for high-touch item 1"/>
+            <property name="highTouch1Desc" type="String" label="🔥 High Touch Item 1 - Description" description="Description for high-touch item 1"/>
+            <property name="highTouch1Icon" type="String" default="utility:opportunity" label="🔥 High Touch Item 1 - Icon" description="Icon for high-touch item 1"/>
+            <property name="highTouch1ButtonLabel" type="String" label="🔥 High Touch Item 1 - Button Label" description="Button label for high-touch item 1"/>
+            <property name="highTouch1ButtonLink" type="String" label="🔥 High Touch Item 1 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="highTouch1DetailTitle" type="String" label="🔥 High Touch Item 1 - Detail Title" description="Title for high-touch item 1 detail section"/>
+            <property name="highTouch1DetailContent" type="String" label="🔥 High Touch Item 1 - Detail Content" description="Detailed content for high-touch item 1"/>
+            
+            <property name="highTouch2Title" type="String" label="🔥 High Touch Item 2 - Title" description="Title for high-touch item 2"/>
+            <property name="highTouch2Desc" type="String" label="🔥 High Touch Item 2 - Description" description="Description for high-touch item 2"/>
+            <property name="highTouch2Icon" type="String" default="utility:warning" label="🔥 High Touch Item 2 - Icon" description="Icon for high-touch item 2"/>
+            <property name="highTouch2ButtonLabel" type="String" label="🔥 High Touch Item 2 - Button Label" description="Button label for high-touch item 2"/>
+            <property name="highTouch2ButtonLink" type="String" label="🔥 High Touch Item 2 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="highTouch2DetailTitle" type="String" label="🔥 High Touch Item 2 - Detail Title" description="Title for high-touch item 2 detail section"/>
+            <property name="highTouch2DetailContent" type="String" label="🔥 High Touch Item 2 - Detail Content" description="Detailed content for high-touch item 2"/>
+            
+            <property name="highTouch3Title" type="String" label="🔥 High Touch Item 3 - Title" description="Title for high-touch item 3"/>
+            <property name="highTouch3Desc" type="String" label="🔥 High Touch Item 3 - Description" description="Description for high-touch item 3"/>
+            <property name="highTouch3Icon" type="String" default="utility:user" label="🔥 High Touch Item 3 - Icon" description="Icon for high-touch item 3"/>
+            <property name="highTouch3ButtonLabel" type="String" label="🔥 High Touch Item 3 - Button Label" description="Button label for high-touch item 3"/>
+            <property name="highTouch3ButtonLink" type="String" label="🔥 High Touch Item 3 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="highTouch3DetailTitle" type="String" label="🔥 High Touch Item 3 - Detail Title" description="Title for high-touch item 3 detail section"/>
+            <property name="highTouch3DetailContent" type="String" label="🔥 High Touch Item 3 - Detail Content" description="Detailed content for high-touch item 3"/>
+            
+            <!-- ============================================== -->
+            <!-- SITE VISITS ITEMS                             -->
+            <!-- ============================================== -->
+            <property name="siteVisits1Title" type="String" label="🏢 Site Visits Item 1 - Title" description="Title for site visit item 1"/>
+            <property name="siteVisits1Desc" type="String" label="🏢 Site Visits Item 1 - Description" description="Description for site visit item 1"/>
+            <property name="siteVisits1Icon" type="String" default="utility:location" label="🏢 Site Visits Item 1 - Icon" description="Icon for site visit item 1"/>
+            <property name="siteVisits1ButtonLabel" type="String" label="🏢 Site Visits Item 1 - Button Label" description="Button label for site visit item 1"/>
+            <property name="siteVisits1ButtonLink" type="String" label="🏢 Site Visits Item 1 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="siteVisits1DetailTitle" type="String" label="🏢 Site Visits Item 1 - Detail Title" description="Title for site visit item 1 detail section"/>
+            <property name="siteVisits1DetailContent" type="String" label="🏢 Site Visits Item 1 - Detail Content" description="Detailed content for site visit item 1"/>
+            
+            <property name="siteVisits2Title" type="String" label="🏢 Site Visits Item 2 - Title" description="Title for site visit item 2"/>
+            <property name="siteVisits2Desc" type="String" label="🏢 Site Visits Item 2 - Description" description="Description for site visit item 2"/>
+            <property name="siteVisits2Icon" type="String" default="utility:location" label="🏢 Site Visits Item 2 - Icon" description="Icon for site visit item 2"/>
+            <property name="siteVisits2ButtonLabel" type="String" label="🏢 Site Visits Item 2 - Button Label" description="Button label for site visit item 2"/>
+            <property name="siteVisits2ButtonLink" type="String" label="🏢 Site Visits Item 2 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="siteVisits2DetailTitle" type="String" label="🏢 Site Visits Item 2 - Detail Title" description="Title for site visit item 2 detail section"/>
+            <property name="siteVisits2DetailContent" type="String" label="🏢 Site Visits Item 2 - Detail Content" description="Detailed content for site visit item 2"/>
+            
+            <property name="siteVisits3Title" type="String" label="🏢 Site Visits Item 3 - Title" description="Title for site visit item 3"/>
+            <property name="siteVisits3Desc" type="String" label="🏢 Site Visits Item 3 - Description" description="Description for site visit item 3"/>
+            <property name="siteVisits3Icon" type="String" default="utility:location" label="🏢 Site Visits Item 3 - Icon" description="Icon for site visit item 3"/>
+            <property name="siteVisits3ButtonLabel" type="String" label="🏢 Site Visits Item 3 - Button Label" description="Button label for site visit item 3"/>
+            <property name="siteVisits3ButtonLink" type="String" label="🏢 Site Visits Item 3 - Button Link" description="URL to navigate to when button is clicked"/>
+            <property name="siteVisits3DetailTitle" type="String" label="🏢 Site Visits Item 3 - Detail Title" description="Title for site visit item 3 detail section"/>
+            <property name="siteVisits3DetailContent" type="String" label="🏢 Site Visits Item 3 - Detail Content" description="Detailed content for site visit item 3"/>
+            
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle> 

@@ -1,0 +1,734 @@
+<aura:component implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable,force:hasRecordId" description="AI Sales Assistant for Retail and Consumer Goods">
+    <!-- Lightning Dependencies for Console Support -->
+    <lightning:workspaceAPI aura:id="workspace" />
+    
+    <!-- Component Attributes -->
+    <aura:attribute name="componentTitle" type="String" default="AI Sales Assistant" description="Title displayed at the top of the component"/>
+    <aura:attribute name="welcomeMessage" type="String" default="Hi there, here's your AI-powered sales overview:" description="Personalized welcome message"/>
+    <aura:attribute name="infoMessage" type="String" default="Managing 2x more customer accounts this quarter. AI has analyzed your portfolio to help you prioritize." description="Information message displayed in the blue info box"/>
+    <aura:attribute name="showInfoSection" type="Boolean" default="true" description="Show the info section under the welcome message"/>
+    <aura:attribute name="buttonColor" type="String" default="0576D3" description="Button color as hex code (with or without #). Default: 0576D3"/>
+    
+    <!-- Customer Type Selection -->
+    <aura:attribute name="customerType" type="String" default="B2B" description="Type of customers for examples: B2B (business customers) or B2C (individual consumers)"/>
+    
+    <!-- Section Controls -->
+    <aura:attribute name="showSiteVisitsSection" type="Boolean" default="false" description="Show the site visits section. Default: false"/>
+    
+    <!-- Section Header Icons -->
+    <aura:attribute name="noTouchSectionIcon" type="String" default="utility:announcement" description="Icon for the no-touch section header"/>
+    <aura:attribute name="lowTouchSectionIcon" type="String" default="utility:check" description="Icon for the low-touch section header"/>
+    <aura:attribute name="highTouchSectionIcon" type="String" default="utility:high_velocity_sales" description="Icon for the high-touch section header"/>
+    <aura:attribute name="siteVisitsSectionIcon" type="String" default="utility:location" description="Icon for the site visits section header"/>
+    
+    <!-- Component Initialization Handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <!-- Handler for when buttonColor attribute changes -->
+    <aura:handler name="change" value="{!v.buttonColor}" action="{!c.handleButtonColorChange}"/>
+    
+    <!-- Handler for when customerType attribute changes -->
+    <aura:handler name="change" value="{!v.customerType}" action="{!c.handleCustomerTypeChange}"/>
+    
+    <!-- URL Change Handler for Console Navigation -->
+    <aura:handler event="aura:locationChange" action="{!c.handleLocationChange}"/>
+    
+    <!-- Accordion State Management -->
+    <aura:attribute name="openSection" type="String" default="noTouch" description="Currently open section (noTouch, lowTouch, siteVisits, highTouch, or empty for none)"/>
+    
+    <!-- Visibility State Tracking - Version 2 with enhanced persistence -->
+    <aura:attribute name="stateVersion" type="String" default="v2" description="Version identifier for state management"/>
+    <aura:attribute name="stateLastSaved" type="Integer" default="0" description="Timestamp when state was last saved"/>
+    
+    <!-- Unique Component ID for storage -->
+    <aura:attribute name="componentId" type="String" default="AISalesAssistant" description="Unique ID for this component instance"/>
+    
+    <!-- No Touch Section Attributes -->
+    <aura:attribute name="noTouchSectionTitle" type="String" default="AI Completed Actions (No Touch)" description="Title for the no-touch section"/>
+    <aura:attribute name="noTouch1Visible" type="Boolean" default="true" description="Whether no-touch item 1 is visible"/>
+    <aura:attribute name="noTouch2Visible" type="Boolean" default="true" description="Whether no-touch item 2 is visible"/>
+    <aura:attribute name="noTouch3Visible" type="Boolean" default="true" description="Whether no-touch item 3 is visible"/>
+    <aura:attribute name="noTouch1Title" type="String" description="Title for no-touch item 1"/>
+    <aura:attribute name="noTouch1Desc" type="String" description="Description for no-touch item 1"/>
+    <aura:attribute name="noTouch1Icon" type="String" default="utility:success" description="Icon for no-touch item 1"/>
+    <aura:attribute name="noTouch1ButtonLabel" type="String" default="View Report" description="Button label for no-touch item 1"/>
+    <aura:attribute name="noTouch1ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="noTouch1ShowButton" type="Boolean" default="true" description="Whether to show button for no-touch item 1"/>
+    <aura:attribute name="noTouch1DetailTitle" type="String" description="Title for no-touch item 1 detail section"/>
+    <aura:attribute name="noTouch1DetailContent" type="String" description="Detailed content for no-touch item 1"/>
+    <aura:attribute name="noTouch1DetailExpanded" type="Boolean" default="false" description="Whether no-touch item 1 detail is expanded"/>
+    <aura:attribute name="noTouch2Title" type="String" description="Title for no-touch item 2"/>
+    <aura:attribute name="noTouch2Desc" type="String" description="Description for no-touch item 2"/>
+    <aura:attribute name="noTouch2Icon" type="String" default="utility:email" description="Icon for no-touch item 2"/>
+    <aura:attribute name="noTouch2ButtonLabel" type="String" default="View Alerts" description="Button label for no-touch item 2"/>
+    <aura:attribute name="noTouch2ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="noTouch2ShowButton" type="Boolean" default="true" description="Whether to show button for no-touch item 2"/>
+    <aura:attribute name="noTouch2DetailTitle" type="String" description="Title for no-touch item 2 detail section"/>
+    <aura:attribute name="noTouch2DetailContent" type="String" description="Detailed content for no-touch item 2"/>
+    <aura:attribute name="noTouch2DetailExpanded" type="Boolean" default="false" description="Whether no-touch item 2 detail is expanded"/>
+    <aura:attribute name="noTouch3Title" type="String" description="Title for no-touch item 3"/>
+    <aura:attribute name="noTouch3Desc" type="String" description="Description for no-touch item 3"/>
+    <aura:attribute name="noTouch3Icon" type="String" default="utility:knowledge_base" description="Icon for no-touch item 3"/>
+    <aura:attribute name="noTouch3ButtonLabel" type="String" default="View Analysis" description="Button label for no-touch item 3"/>
+    <aura:attribute name="noTouch3ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="noTouch3ShowButton" type="Boolean" default="true" description="Whether to show button for no-touch item 3"/>
+    <aura:attribute name="noTouch3DetailTitle" type="String" description="Title for no-touch item 3 detail section"/>
+    <aura:attribute name="noTouch3DetailContent" type="String" description="Detailed content for no-touch item 3"/>
+    <aura:attribute name="noTouch3DetailExpanded" type="Boolean" default="false" description="Whether no-touch item 3 detail is expanded"/>
+    
+    <!-- Low Touch Section Attributes -->
+    <aura:attribute name="lowTouchSectionTitle" type="String" default="Recommended Actions (Low Touch)" description="Title for the low-touch section"/>
+    <aura:attribute name="lowTouch1Visible" type="Boolean" default="true" description="Whether low-touch item 1 is visible"/>
+    <aura:attribute name="lowTouch2Visible" type="Boolean" default="true" description="Whether low-touch item 2 is visible"/>
+    <aura:attribute name="lowTouch3Visible" type="Boolean" default="true" description="Whether low-touch item 3 is visible"/>
+    <aura:attribute name="lowTouch1Title" type="String" description="Title for low-touch item 1"/>
+    <aura:attribute name="lowTouch1Desc" type="String" description="Description for low-touch item 1"/>
+    <aura:attribute name="lowTouch1Icon" type="String" default="utility:priority" description="Icon for low-touch item 1"/>
+    <aura:attribute name="lowTouch1ButtonLabel" type="String" description="Button label for low-touch item 1"/>
+    <aura:attribute name="lowTouch1ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="lowTouch1DetailTitle" type="String" description="Title for low-touch item 1 detail section"/>
+    <aura:attribute name="lowTouch1DetailContent" type="String" description="Detailed content for low-touch item 1"/>
+    <aura:attribute name="lowTouch1DetailExpanded" type="Boolean" default="false" description="Whether low-touch item 1 detail is expanded"/>
+    <aura:attribute name="lowTouch2Title" type="String" description="Title for low-touch item 2"/>
+    <aura:attribute name="lowTouch2Desc" type="String" description="Description for low-touch item 2"/>
+    <aura:attribute name="lowTouch2Icon" type="String" default="utility:approval" description="Icon for low-touch item 2"/>
+    <aura:attribute name="lowTouch2ButtonLabel" type="String" description="Button label for low-touch item 2"/>
+    <aura:attribute name="lowTouch2ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="lowTouch2DetailTitle" type="String" description="Title for low-touch item 2 detail section"/>
+    <aura:attribute name="lowTouch2DetailContent" type="String" description="Detailed content for low-touch item 2"/>
+    <aura:attribute name="lowTouch2DetailExpanded" type="Boolean" default="false" description="Whether low-touch item 2 detail is expanded"/>
+    <aura:attribute name="lowTouch3Title" type="String" description="Title for low-touch item 3"/>
+    <aura:attribute name="lowTouch3Desc" type="String" description="Description for low-touch item 3"/>
+    <aura:attribute name="lowTouch3Icon" type="String" default="utility:groups" description="Icon for low-touch item 3"/>
+    <aura:attribute name="lowTouch3ButtonLabel" type="String" description="Button label for low-touch item 3"/>
+    <aura:attribute name="lowTouch3ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="lowTouch3DetailTitle" type="String" description="Title for low-touch item 3 detail section"/>
+    <aura:attribute name="lowTouch3DetailContent" type="String" description="Detailed content for low-touch item 3"/>
+    <aura:attribute name="lowTouch3DetailExpanded" type="Boolean" default="false" description="Whether low-touch item 3 detail is expanded"/>
+    
+    <!-- Site Visits Section Attributes -->
+    <aura:attribute name="siteVisitsSectionTitle" type="String" default="Site Visits" description="Title for the site visits section"/>
+    <aura:attribute name="siteVisits1Visible" type="Boolean" default="true" description="Whether site visit item 1 is visible"/>
+    <aura:attribute name="siteVisits2Visible" type="Boolean" default="true" description="Whether site visit item 2 is visible"/>
+    <aura:attribute name="siteVisits3Visible" type="Boolean" default="true" description="Whether site visit item 3 is visible"/>
+    <aura:attribute name="siteVisits1Title" type="String" description="Title for site visit item 1"/>
+    <aura:attribute name="siteVisits1Desc" type="String" description="Description for site visit item 1"/>
+    <aura:attribute name="siteVisits1Icon" type="String" default="utility:location" description="Icon for site visit item 1"/>
+    <aura:attribute name="siteVisits1ButtonLabel" type="String" description="Button label for site visit item 1"/>
+    <aura:attribute name="siteVisits1ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="siteVisits1DetailTitle" type="String" description="Title for site visit item 1 detail section"/>
+    <aura:attribute name="siteVisits1DetailContent" type="String" description="Detailed content for site visit item 1"/>
+    <aura:attribute name="siteVisits1DetailExpanded" type="Boolean" default="false" description="Whether site visit item 1 detail is expanded"/>
+    <aura:attribute name="siteVisits2Title" type="String" description="Title for site visit item 2"/>
+    <aura:attribute name="siteVisits2Desc" type="String" description="Description for site visit item 2"/>
+    <aura:attribute name="siteVisits2Icon" type="String" default="utility:location" description="Icon for site visit item 2"/>
+    <aura:attribute name="siteVisits2ButtonLabel" type="String" description="Button label for site visit item 2"/>
+    <aura:attribute name="siteVisits2ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="siteVisits2DetailTitle" type="String" description="Title for site visit item 2 detail section"/>
+    <aura:attribute name="siteVisits2DetailContent" type="String" description="Detailed content for site visit item 2"/>
+    <aura:attribute name="siteVisits2DetailExpanded" type="Boolean" default="false" description="Whether site visit item 2 detail is expanded"/>
+    <aura:attribute name="siteVisits3Title" type="String" description="Title for site visit item 3"/>
+    <aura:attribute name="siteVisits3Desc" type="String" description="Description for site visit item 3"/>
+    <aura:attribute name="siteVisits3Icon" type="String" default="utility:location" description="Icon for site visit item 3"/>
+    <aura:attribute name="siteVisits3ButtonLabel" type="String" description="Button label for site visit item 3"/>
+    <aura:attribute name="siteVisits3ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="siteVisits3DetailTitle" type="String" description="Title for site visit item 3 detail section"/>
+    <aura:attribute name="siteVisits3DetailContent" type="String" description="Detailed content for site visit item 3"/>
+    <aura:attribute name="siteVisits3DetailExpanded" type="Boolean" default="false" description="Whether site visit item 3 detail is expanded"/>
+    
+    <!-- High Touch Section Attributes -->
+    <aura:attribute name="highTouchSectionTitle" type="String" default="Priority Focus (High Touch)" description="Title for the high-touch section"/>
+    <aura:attribute name="highTouch1Visible" type="Boolean" default="true" description="Whether high-touch item 1 is visible"/>
+    <aura:attribute name="highTouch2Visible" type="Boolean" default="true" description="Whether high-touch item 2 is visible"/>
+    <aura:attribute name="highTouch3Visible" type="Boolean" default="true" description="Whether high-touch item 3 is visible"/>
+    <aura:attribute name="highTouch1Title" type="String" description="Title for high-touch item 1"/>
+    <aura:attribute name="highTouch1Desc" type="String" description="Description for high-touch item 1"/>
+    <aura:attribute name="highTouch1Icon" type="String" default="utility:opportunity" description="Icon for high-touch item 1"/>
+    <aura:attribute name="highTouch1ButtonLabel" type="String" description="Button label for high-touch item 1"/>
+    <aura:attribute name="highTouch1ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="highTouch1DetailTitle" type="String" description="Title for high-touch item 1 detail section"/>
+    <aura:attribute name="highTouch1DetailContent" type="String" description="Detailed content for high-touch item 1"/>
+    <aura:attribute name="highTouch1DetailExpanded" type="Boolean" default="false" description="Whether high-touch item 1 detail is expanded"/>
+    <aura:attribute name="highTouch2Title" type="String" description="Title for high-touch item 2"/>
+    <aura:attribute name="highTouch2Desc" type="String" description="Description for high-touch item 2"/>
+    <aura:attribute name="highTouch2Icon" type="String" default="utility:warning" description="Icon for high-touch item 2"/>
+    <aura:attribute name="highTouch2ButtonLabel" type="String" description="Button label for high-touch item 2"/>
+    <aura:attribute name="highTouch2ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="highTouch2DetailTitle" type="String" description="Title for high-touch item 2 detail section"/>
+    <aura:attribute name="highTouch2DetailContent" type="String" description="Detailed content for high-touch item 2"/>
+    <aura:attribute name="highTouch2DetailExpanded" type="Boolean" default="false" description="Whether high-touch item 2 detail is expanded"/>
+    <aura:attribute name="highTouch3Title" type="String" description="Title for high-touch item 3"/>
+    <aura:attribute name="highTouch3Desc" type="String" description="Description for high-touch item 3"/>
+    <aura:attribute name="highTouch3Icon" type="String" default="utility:user" description="Icon for high-touch item 3"/>
+    <aura:attribute name="highTouch3ButtonLabel" type="String" description="Button label for high-touch item 3"/>
+    <aura:attribute name="highTouch3ButtonLink" type="String" default="" description="URL to navigate to when button is clicked"/>
+    <aura:attribute name="highTouch3DetailTitle" type="String" description="Title for high-touch item 3 detail section"/>
+    <aura:attribute name="highTouch3DetailContent" type="String" description="Detailed content for high-touch item 3"/>
+    <aura:attribute name="highTouch3DetailExpanded" type="Boolean" default="false" description="Whether high-touch item 3 detail is expanded"/>
+    
+    <!-- Component Implementation -->
+    <div class="slds-card slds-card_boundary">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning:icon iconName="utility:agent_astro" size="small" alternativeText="AI"/>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_medium">{!v.componentTitle}</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        
+        <div class="slds-card__body slds-card__body_inner">
+            <div class="slds-m-bottom_medium">
+                <p class="slds-text-heading_small slds-m-bottom_small">{!v.welcomeMessage}</p>
+                <aura:if isTrue="{!v.showInfoSection}">
+                    <div class="slds-box slds-theme_info slds-m-bottom_medium">
+                        <p class="slds-text-body_regular info-section">
+                            <lightning:icon iconName="utility:info" size="x-small" class="slds-m-right_x-small" alternativeText="Info" />
+                            {!v.infoMessage}
+                        </p>
+                    </div>
+                </aura:if>
+            </div>
+            
+            <!-- No Touch Section: Notifications (NOW AT TOP) -->
+            <div class="{!'slds-section accordion-section ' + (v.openSection == 'noTouch' ? 'open' : '')}" onclick="{!c.toggleSection}" data-section="noTouch">
+                <div class="section-header">
+                    <div class="section-title">
+                        <lightning:icon iconName="{!v.noTouchSectionIcon}" size="x-small" class="slds-m-right_x-small" alternativeText="Completed" />
+                        {!v.noTouchSectionTitle}
+                    </div>
+                    <lightning:icon iconName="utility:chevrondown" size="x-small" class="{!'chevron-icon ' + (v.openSection == 'noTouch' ? 'open' : '')}" alternativeText="Expand" />
+                </div>
+                <div class="{!'accordion-content ' + (v.openSection == 'noTouch' ? 'open' : '')}">
+                    <ul class="slds-has-dividers_bottom-space">
+                        <!-- Item 1 -->
+                        <aura:if isTrue="{!v.noTouch1Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure no-touch-icon">
+                                            <lightning:icon iconName="{!v.noTouch1Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.noTouch1Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="noTouch1"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.noTouch1Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.noTouch1ButtonLabel}" title="{!v.noTouch1ButtonLabel}" onclick="{!c.handleNoTouchButton}" value="0" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.noTouch1DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.noTouch1DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.noTouch1DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                        <!-- Item 2 -->
+                        <aura:if isTrue="{!v.noTouch2Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure no-touch-icon">
+                                            <lightning:icon iconName="{!v.noTouch2Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.noTouch2Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="noTouch2"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.noTouch2Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.noTouch2ButtonLabel}" title="{!v.noTouch2ButtonLabel}" onclick="{!c.handleNoTouchButton}" value="1" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.noTouch2DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.noTouch2DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.noTouch2DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                        <!-- Item 3 -->
+                        <aura:if isTrue="{!v.noTouch3Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure no-touch-icon">
+                                            <lightning:icon iconName="{!v.noTouch3Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.noTouch3Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="noTouch3"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.noTouch3Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.noTouch3ButtonLabel}" title="{!v.noTouch3ButtonLabel}" onclick="{!c.handleNoTouchButton}" value="2" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.noTouch3DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.noTouch3DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.noTouch3DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Low Touch Section: Recommended Tasks (NOW SECOND) -->
+            <div class="{!'slds-section accordion-section ' + (v.openSection == 'lowTouch' ? 'open' : '')}" onclick="{!c.toggleSection}" data-section="lowTouch">
+                <div class="section-header">
+                    <div class="section-title">
+                        <lightning:icon iconName="{!v.lowTouchSectionIcon}" size="x-small" class="slds-m-right_x-small" alternativeText="Recommended" />
+                        {!v.lowTouchSectionTitle}
+                    </div>
+                    <lightning:icon iconName="utility:chevrondown" size="x-small" class="{!'chevron-icon ' + (v.openSection == 'lowTouch' ? 'open' : '')}" alternativeText="Expand" />
+                </div>
+                <div class="{!'accordion-content ' + (v.openSection == 'lowTouch' ? 'open' : '')}">
+                    <ul class="slds-has-dividers_bottom-space">
+                        <!-- Item 1 -->
+                        <aura:if isTrue="{!v.lowTouch1Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure low-touch-icon">
+                                            <lightning:icon iconName="{!v.lowTouch1Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.lowTouch1Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="lowTouch1"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.lowTouch1Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.lowTouch1ButtonLabel}" title="{!v.lowTouch1ButtonLabel}" value="0" onclick="{!c.handleLowTouchAction}" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.lowTouch1DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.lowTouch1DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.lowTouch1DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                        <!-- Item 2 -->
+                        <aura:if isTrue="{!v.lowTouch2Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure low-touch-icon">
+                                            <lightning:icon iconName="{!v.lowTouch2Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.lowTouch2Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="lowTouch2"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.lowTouch2Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.lowTouch2ButtonLabel}" title="{!v.lowTouch2ButtonLabel}" value="1" onclick="{!c.handleLowTouchAction}" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.lowTouch2DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.lowTouch2DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.lowTouch2DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                        <!-- Item 3 -->
+                        <aura:if isTrue="{!v.lowTouch3Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure low-touch-icon">
+                                            <lightning:icon iconName="{!v.lowTouch3Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.lowTouch3Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="lowTouch3"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.lowTouch3Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.lowTouch3ButtonLabel}" title="{!v.lowTouch3ButtonLabel}" value="2" onclick="{!c.handleLowTouchAction}" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.lowTouch3DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.lowTouch3DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.lowTouch3DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- High Touch Section: Priority Tasks (NOW LAST) -->
+            <div class="{!'slds-section accordion-section ' + (v.openSection == 'highTouch' ? 'open' : '')}" onclick="{!c.toggleSection}" data-section="highTouch">
+                <div class="section-header">
+                    <div class="section-title">
+                        <lightning:icon iconName="{!v.highTouchSectionIcon}" size="x-small" class="slds-m-right_x-small" alternativeText="Priority" />
+                        {!v.highTouchSectionTitle}
+                    </div>
+                    <lightning:icon iconName="utility:chevrondown" size="x-small" class="{!'chevron-icon ' + (v.openSection == 'highTouch' ? 'open' : '')}" alternativeText="Expand" />
+                </div>
+                <div class="{!'accordion-content ' + (v.openSection == 'highTouch' ? 'open' : '')}">
+                    <ul class="slds-has-dividers_bottom-space">
+                        <!-- Item 1 -->
+                        <aura:if isTrue="{!v.highTouch1Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure high-touch-icon">
+                                            <lightning:icon iconName="{!v.highTouch1Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.highTouch1Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="highTouch1"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.highTouch1Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.highTouch1ButtonLabel}" title="{!v.highTouch1ButtonLabel}" value="0" onclick="{!c.handleHighTouchFocus}" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.highTouch1DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.highTouch1DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.highTouch1DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                        <!-- Item 2 -->
+                        <aura:if isTrue="{!v.highTouch2Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure high-touch-icon">
+                                            <lightning:icon iconName="{!v.highTouch2Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.highTouch2Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="highTouch2"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.highTouch2Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.highTouch2ButtonLabel}" title="{!v.highTouch2ButtonLabel}" value="1" onclick="{!c.handleHighTouchFocus}" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.highTouch2DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.highTouch2DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.highTouch2DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                        <!-- Item 3 -->
+                        <aura:if isTrue="{!v.highTouch3Visible}">
+                            <li class="slds-item slds-p-vertical_medium">
+                                <div class="slds-box slds-box_xx-small task-box">
+                                    <div class="slds-media slds-media_center slds-m-bottom_small">
+                                        <div class="slds-media__figure high-touch-icon">
+                                            <lightning:icon iconName="{!v.highTouch3Icon}" size="small" alternativeText="Icon" />
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-title_caps task-title">{!v.highTouch3Title}</div>
+                                        </div>
+                                        <div class="slds-media__figure slds-media__figure_reverse">
+                                            <lightning:buttonIcon 
+                                                iconName="utility:info" 
+                                                variant="bare" 
+                                                size="small" 
+                                                alternativeText="More Info" 
+                                                title="More Info"
+                                                value="highTouch3"
+                                                onclick="{!c.toggleDetail}" />
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-bottom_medium">
+                                        <div class="slds-text-body_regular task-description">{!v.highTouch3Desc}</div>
+                                    </div>
+                                    <div class="slds-text-align_center">
+                                        <lightning:button class="action-button custom-button" variant="brand" label="{!v.highTouch3ButtonLabel}" title="{!v.highTouch3ButtonLabel}" value="2" onclick="{!c.handleHighTouchFocus}" />
+                                    </div>
+                                    
+                                    <!-- Expandable Detail Section -->
+                                    <aura:if isTrue="{!v.highTouch3DetailExpanded}">
+                                        <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                            <h4 class="detail-title slds-m-bottom_small">{!v.highTouch3DetailTitle}</h4>
+                                            <div class="detail-content"><aura:unescapedHtml value="{!v.highTouch3DetailContent}"/></div>
+                                        </div>
+                                    </aura:if>
+                                </div>
+                            </li>
+                        </aura:if>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Site Visits Section (Optional) -->
+            <aura:if isTrue="{!v.showSiteVisitsSection}">
+                <div class="{!'slds-section accordion-section ' + (v.openSection == 'siteVisits' ? 'open' : '')}" onclick="{!c.toggleSection}" data-section="siteVisits">
+                    <div class="section-header">
+                        <div class="section-title">
+                            <lightning:icon iconName="{!v.siteVisitsSectionIcon}" size="x-small" class="slds-m-right_x-small" alternativeText="Site Visits" />
+                            {!v.siteVisitsSectionTitle}
+                        </div>
+                        <lightning:icon iconName="utility:chevrondown" size="x-small" class="{!'chevron-icon ' + (v.openSection == 'siteVisits' ? 'open' : '')}" alternativeText="Expand" />
+                    </div>
+                    <div class="{!'accordion-content ' + (v.openSection == 'siteVisits' ? 'open' : '')}">
+                        <ul class="slds-has-dividers_bottom-space">
+                            <!-- Item 1 -->
+                            <aura:if isTrue="{!v.siteVisits1Visible}">
+                                <li class="slds-item slds-p-vertical_medium">
+                                    <div class="slds-box slds-box_xx-small task-box">
+                                        <div class="slds-media slds-media_center slds-m-bottom_small">
+                                            <div class="slds-media__figure site-visits-icon">
+                                                <lightning:icon iconName="{!v.siteVisits1Icon}" size="small" alternativeText="Icon" />
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <div class="slds-text-title_caps task-title">{!v.siteVisits1Title}</div>
+                                            </div>
+                                            <div class="slds-media__figure slds-media__figure_reverse">
+                                                <lightning:buttonIcon 
+                                                    iconName="utility:info" 
+                                                    variant="bare" 
+                                                    size="small" 
+                                                    alternativeText="More Info" 
+                                                    title="More Info"
+                                                    value="siteVisits1"
+                                                    onclick="{!c.toggleDetail}" />
+                                            </div>
+                                        </div>
+                                        <div class="slds-m-bottom_medium">
+                                            <div class="slds-text-body_regular task-description">{!v.siteVisits1Desc}</div>
+                                        </div>
+                                        <div class="slds-text-align_center">
+                                            <lightning:button class="action-button custom-button" variant="brand" label="{!v.siteVisits1ButtonLabel}" title="{!v.siteVisits1ButtonLabel}" value="0" onclick="{!c.handleSiteVisit}" />
+                                        </div>
+                                        
+                                        <!-- Expandable Detail Section -->
+                                        <aura:if isTrue="{!v.siteVisits1DetailExpanded}">
+                                            <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                                <h4 class="detail-title slds-m-bottom_small">{!v.siteVisits1DetailTitle}</h4>
+                                                <div class="detail-content"><aura:unescapedHtml value="{!v.siteVisits1DetailContent}"/></div>
+                                            </div>
+                                        </aura:if>
+                                    </div>
+                                </li>
+                            </aura:if>
+                            <!-- Item 2 -->
+                            <aura:if isTrue="{!v.siteVisits2Visible}">
+                                <li class="slds-item slds-p-vertical_medium">
+                                    <div class="slds-box slds-box_xx-small task-box">
+                                        <div class="slds-media slds-media_center slds-m-bottom_small">
+                                            <div class="slds-media__figure site-visits-icon-yellow">
+                                                <lightning:icon iconName="{!v.siteVisits2Icon}" size="small" alternativeText="Icon" />
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <div class="slds-text-title_caps task-title">{!v.siteVisits2Title}</div>
+                                            </div>
+                                            <div class="slds-media__figure slds-media__figure_reverse">
+                                                <lightning:buttonIcon 
+                                                    iconName="utility:info" 
+                                                    variant="bare" 
+                                                    size="small" 
+                                                    alternativeText="More Info" 
+                                                    title="More Info"
+                                                    value="siteVisits2"
+                                                    onclick="{!c.toggleDetail}" />
+                                            </div>
+                                        </div>
+                                        <div class="slds-m-bottom_medium">
+                                            <div class="slds-text-body_regular task-description">{!v.siteVisits2Desc}</div>
+                                        </div>
+                                        <div class="slds-text-align_center">
+                                            <lightning:button class="action-button custom-button" variant="brand" label="{!v.siteVisits2ButtonLabel}" title="{!v.siteVisits2ButtonLabel}" value="1" onclick="{!c.handleSiteVisit}" />
+                                        </div>
+                                        
+                                        <!-- Expandable Detail Section -->
+                                        <aura:if isTrue="{!v.siteVisits2DetailExpanded}">
+                                            <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                                <h4 class="detail-title slds-m-bottom_small">{!v.siteVisits2DetailTitle}</h4>
+                                                <div class="detail-content"><aura:unescapedHtml value="{!v.siteVisits2DetailContent}"/></div>
+                                            </div>
+                                        </aura:if>
+                                    </div>
+                                </li>
+                            </aura:if>
+                            <!-- Item 3 -->
+                            <aura:if isTrue="{!v.siteVisits3Visible}">
+                                <li class="slds-item slds-p-vertical_medium">
+                                    <div class="slds-box slds-box_xx-small task-box">
+                                        <div class="slds-media slds-media_center slds-m-bottom_small">
+                                            <div class="slds-media__figure site-visits-icon">
+                                                <lightning:icon iconName="{!v.siteVisits3Icon}" size="small" alternativeText="Icon" />
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <div class="slds-text-title_caps task-title">{!v.siteVisits3Title}</div>
+                                            </div>
+                                            <div class="slds-media__figure slds-media__figure_reverse">
+                                                <lightning:buttonIcon 
+                                                    iconName="utility:info" 
+                                                    variant="bare" 
+                                                    size="small" 
+                                                    alternativeText="More Info" 
+                                                    title="More Info"
+                                                    value="siteVisits3"
+                                                    onclick="{!c.toggleDetail}" />
+                                            </div>
+                                        </div>
+                                        <div class="slds-m-bottom_medium">
+                                            <div class="slds-text-body_regular task-description">{!v.siteVisits3Desc}</div>
+                                        </div>
+                                        <div class="slds-text-align_center">
+                                            <lightning:button class="action-button custom-button" variant="brand" label="{!v.siteVisits3ButtonLabel}" title="{!v.siteVisits3ButtonLabel}" value="2" onclick="{!c.handleSiteVisit}" />
+                                        </div>
+                                        
+                                        <!-- Expandable Detail Section -->
+                                        <aura:if isTrue="{!v.siteVisits3DetailExpanded}">
+                                            <div class="slds-m-top_medium slds-p-top_medium slds-border_top">
+                                                <h4 class="detail-title slds-m-bottom_small">{!v.siteVisits3DetailTitle}</h4>
+                                                <div class="detail-content"><aura:unescapedHtml value="{!v.siteVisits3DetailContent}"/></div>
+                                            </div>
+                                        </aura:if>
+                                    </div>
+                                </li>
+                            </aura:if>
+                        </ul>
+                    </div>
+                </div>
+            </aura:if>
+        </div>
+        
+        <footer class="slds-card__footer">
+            <div class="slds-grid slds-grid_align-center">
+                <lightning:button variant="neutral" label="Refresh Insights" title="Refresh Insights" iconName="utility:refresh" onclick="{!c.refreshInsights}" />
+            </div>
+        </footer>
+    </div>
+</aura:component>

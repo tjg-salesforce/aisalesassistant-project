@@ -1,0 +1,157 @@
+<design:component label="AI Sales Assistant">
+    <!-- ============================================================ -->
+    <!-- =================== GENERAL CONFIGURATION ================== -->
+    <!-- ============================================================ -->
+    <design:attribute name="componentTitle" label="[1. GENERAL] Component Title" description="The title displayed at the top of the component" />
+    <design:attribute name="welcomeMessage" label="[1. GENERAL] Welcome Message" description="Personalized welcome message for the sales rep" />
+    <design:attribute name="infoMessage" label="[1. GENERAL] Info Message" description="Information message displayed in the blue box below the welcome message" />
+    <design:attribute name="showInfoSection" label="[1. GENERAL] Show Info Section" description="Show the info section under the welcome message" />
+    <design:attribute name="buttonColor" label="[1. GENERAL] Button Color" description="Button color as hex code (with or without #). Default: 0576D3" />
+    
+    <!-- ************ Customer Type Selection ************ -->
+    <design:attribute name="customerType" label="[1. GENERAL] Customer Type" 
+        datasource="B2B,B2C" default="B2B"
+        description="Type of customers for examples: B2B (business customers) or B2C (individual consumers)" />
+    
+    <!-- ************ Section Controls ************ -->
+    <design:attribute name="showSiteVisitsSection" label="[1. GENERAL] Show Site Visits Section" description="Show the site visits section. Default: false" />
+    
+    <!-- ************ Section Titles ************ -->
+    <design:attribute name="highTouchSectionTitle" label="[1. GENERAL] HIGH TOUCH Section Title" description="Title for the high-touch section" />
+    <design:attribute name="lowTouchSectionTitle" label="[1. GENERAL] LOW TOUCH Section Title" description="Title for the low-touch section" />
+    <design:attribute name="siteVisitsSectionTitle" label="[1. GENERAL] SITE VISITS Section Title" description="Title for the site visits section" />
+    <design:attribute name="noTouchSectionTitle" label="[1. GENERAL] NO TOUCH Section Title" description="Title for the no-touch section" />
+    
+    <!-- ************ Section Header Icons ************ -->
+    <design:attribute name="noTouchSectionIcon" label="[1. GENERAL] NO TOUCH Section Icon" description="Icon for the no-touch section header. Default: utility:announcement" />
+    <design:attribute name="lowTouchSectionIcon" label="[1. GENERAL] LOW TOUCH Section Icon" description="Icon for the low-touch section header. Default: utility:check" />
+    <design:attribute name="highTouchSectionIcon" label="[1. GENERAL] HIGH TOUCH Section Icon" description="Icon for the high-touch section header. Default: utility:high_velocity_sales" />
+    <design:attribute name="siteVisitsSectionIcon" label="[1. GENERAL] SITE VISITS Section Icon" description="Icon for the site visits section header. Default: utility:location" />
+    
+    <!-- ============================================================ -->
+    <!-- ============= HIGH TOUCH ITEMS (PRIORITY FOCUS) ============ -->
+    <!-- ============================================================ -->
+    
+    <!-- ********** High Touch Item 1 Settings ********** -->
+    <design:attribute name="highTouch1Title" label="[2. HIGH TOUCH] ITEM 1 - Title" description="Title for high-touch item 1" />
+    <design:attribute name="highTouch1Desc" label="[2. HIGH TOUCH] ITEM 1 - Description" description="Description for high-touch item 1" />
+    <design:attribute name="highTouch1Icon" label="[2. HIGH TOUCH] ITEM 1 - Icon" description="Icon name for high-touch item 1" />
+    <design:attribute name="highTouch1ButtonLabel" label="[2. HIGH TOUCH] ITEM 1 - Button Label" description="Button label for high-touch item 1" />
+    <design:attribute name="highTouch1ButtonLink" label="[2. HIGH TOUCH] ITEM 1 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="highTouch1DetailTitle" label="[2. HIGH TOUCH] ITEM 1 - Detail Title" description="Title for high-touch item 1 detail section" />
+    <design:attribute name="highTouch1DetailContent" label="[2. HIGH TOUCH] ITEM 1 - Detail Content" description="Detailed content for high-touch item 1" />
+    
+    <!-- ********** High Touch Item 2 Settings ********** -->
+    <design:attribute name="highTouch2Title" label="[2. HIGH TOUCH] ITEM 2 - Title" description="Title for high-touch item 2" />
+    <design:attribute name="highTouch2Desc" label="[2. HIGH TOUCH] ITEM 2 - Description" description="Description for high-touch item 2" />
+    <design:attribute name="highTouch2Icon" label="[2. HIGH TOUCH] ITEM 2 - Icon" description="Icon name for high-touch item 2" />
+    <design:attribute name="highTouch2ButtonLabel" label="[2. HIGH TOUCH] ITEM 2 - Button Label" description="Button label for high-touch item 2" />
+    <design:attribute name="highTouch2ButtonLink" label="[2. HIGH TOUCH] ITEM 2 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="highTouch2DetailTitle" label="[2. HIGH TOUCH] ITEM 2 - Detail Title" description="Title for high-touch item 2 detail section" />
+    <design:attribute name="highTouch2DetailContent" label="[2. HIGH TOUCH] ITEM 2 - Detail Content" description="Detailed content for high-touch item 2" />
+    
+    <!-- ********** High Touch Item 3 Settings ********** -->
+    <design:attribute name="highTouch3Title" label="[2. HIGH TOUCH] ITEM 3 - Title" description="Title for high-touch item 3" />
+    <design:attribute name="highTouch3Desc" label="[2. HIGH TOUCH] ITEM 3 - Description" description="Description for high-touch item 3" />
+    <design:attribute name="highTouch3Icon" label="[2. HIGH TOUCH] ITEM 3 - Icon" description="Icon name for high-touch item 3" />
+    <design:attribute name="highTouch3ButtonLabel" label="[2. HIGH TOUCH] ITEM 3 - Button Label" description="Button label for high-touch item 3" />
+    <design:attribute name="highTouch3ButtonLink" label="[2. HIGH TOUCH] ITEM 3 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="highTouch3DetailTitle" label="[2. HIGH TOUCH] ITEM 3 - Detail Title" description="Title for high-touch item 3 detail section" />
+    <design:attribute name="highTouch3DetailContent" label="[2. HIGH TOUCH] ITEM 3 - Detail Content" description="Detailed content for high-touch item 3" />
+    
+    <!-- ============================================================ -->
+    <!-- =========== LOW TOUCH ITEMS (RECOMMENDED ACTIONS) ========== -->
+    <!-- ============================================================ -->
+    
+    <!-- ********** Low Touch Item 1 Settings ********** -->
+    <design:attribute name="lowTouch1Title" label="[3. LOW TOUCH] ITEM 1 - Title" description="Title for low-touch item 1" />
+    <design:attribute name="lowTouch1Desc" label="[3. LOW TOUCH] ITEM 1 - Description" description="Description for low-touch item 1" />
+    <design:attribute name="lowTouch1Icon" label="[3. LOW TOUCH] ITEM 1 - Icon" description="Icon name for low-touch item 1" />
+    <design:attribute name="lowTouch1ButtonLabel" label="[3. LOW TOUCH] ITEM 1 - Button Label" description="Button label for low-touch item 1" />
+    <design:attribute name="lowTouch1ButtonLink" label="[3. LOW TOUCH] ITEM 1 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="lowTouch1DetailTitle" label="[3. LOW TOUCH] ITEM 1 - Detail Title" description="Title for low-touch item 1 detail section" />
+    <design:attribute name="lowTouch1DetailContent" label="[3. LOW TOUCH] ITEM 1 - Detail Content" description="Detailed content for low-touch item 1" />
+    
+    <!-- ********** Low Touch Item 2 Settings ********** -->
+    <design:attribute name="lowTouch2Title" label="[3. LOW TOUCH] ITEM 2 - Title" description="Title for low-touch item 2" />
+    <design:attribute name="lowTouch2Desc" label="[3. LOW TOUCH] ITEM 2 - Description" description="Description for low-touch item 2" />
+    <design:attribute name="lowTouch2Icon" label="[3. LOW TOUCH] ITEM 2 - Icon" description="Icon name for low-touch item 2" />
+    <design:attribute name="lowTouch2ButtonLabel" label="[3. LOW TOUCH] ITEM 2 - Button Label" description="Button label for low-touch item 2" />
+    <design:attribute name="lowTouch2ButtonLink" label="[3. LOW TOUCH] ITEM 2 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="lowTouch2DetailTitle" label="[3. LOW TOUCH] ITEM 2 - Detail Title" description="Title for low-touch item 2 detail section" />
+    <design:attribute name="lowTouch2DetailContent" label="[3. LOW TOUCH] ITEM 2 - Detail Content" description="Detailed content for low-touch item 2" />
+    
+    <!-- ********** Low Touch Item 3 Settings ********** -->
+    <design:attribute name="lowTouch3Title" label="[3. LOW TOUCH] ITEM 3 - Title" description="Title for low-touch item 3" />
+    <design:attribute name="lowTouch3Desc" label="[3. LOW TOUCH] ITEM 3 - Description" description="Description for low-touch item 3" />
+    <design:attribute name="lowTouch3Icon" label="[3. LOW TOUCH] ITEM 3 - Icon" description="Icon name for low-touch item 3" />
+    <design:attribute name="lowTouch3ButtonLabel" label="[3. LOW TOUCH] ITEM 3 - Button Label" description="Button label for low-touch item 3" />
+    <design:attribute name="lowTouch3ButtonLink" label="[3. LOW TOUCH] ITEM 3 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="lowTouch3DetailTitle" label="[3. LOW TOUCH] ITEM 3 - Detail Title" description="Title for low-touch item 3 detail section" />
+    <design:attribute name="lowTouch3DetailContent" label="[3. LOW TOUCH] ITEM 3 - Detail Content" description="Detailed content for low-touch item 3" />
+    
+    <!-- ============================================================ -->
+    <!-- ================= SITE VISITS ITEMS ======================= -->
+    <!-- ============================================================ -->
+    
+    <!-- ********** Site Visits Item 1 Settings ********** -->
+    <design:attribute name="siteVisits1Title" label="[4. SITE VISITS] ITEM 1 - Title" description="Title for site visit item 1" />
+    <design:attribute name="siteVisits1Desc" label="[4. SITE VISITS] ITEM 1 - Description" description="Description for site visit item 1" />
+    <design:attribute name="siteVisits1Icon" label="[4. SITE VISITS] ITEM 1 - Icon" description="Icon name for site visit item 1" />
+    <design:attribute name="siteVisits1ButtonLabel" label="[4. SITE VISITS] ITEM 1 - Button Label" description="Button label for site visit item 1" />
+    <design:attribute name="siteVisits1ButtonLink" label="[4. SITE VISITS] ITEM 1 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="siteVisits1DetailTitle" label="[4. SITE VISITS] ITEM 1 - Detail Title" description="Title for site visit item 1 detail section" />
+    <design:attribute name="siteVisits1DetailContent" label="[4. SITE VISITS] ITEM 1 - Detail Content" description="Detailed content for site visit item 1" />
+    
+    <!-- ********** Site Visits Item 2 Settings ********** -->
+    <design:attribute name="siteVisits2Title" label="[4. SITE VISITS] ITEM 2 - Title" description="Title for site visit item 2" />
+    <design:attribute name="siteVisits2Desc" label="[4. SITE VISITS] ITEM 2 - Description" description="Description for site visit item 2" />
+    <design:attribute name="siteVisits2Icon" label="[4. SITE VISITS] ITEM 2 - Icon" description="Icon name for site visit item 2" />
+    <design:attribute name="siteVisits2ButtonLabel" label="[4. SITE VISITS] ITEM 2 - Button Label" description="Button label for site visit item 2" />
+    <design:attribute name="siteVisits2ButtonLink" label="[4. SITE VISITS] ITEM 2 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="siteVisits2DetailTitle" label="[4. SITE VISITS] ITEM 2 - Detail Title" description="Title for site visit item 2 detail section" />
+    <design:attribute name="siteVisits2DetailContent" label="[4. SITE VISITS] ITEM 2 - Detail Content" description="Detailed content for site visit item 2" />
+    
+    <!-- ********** Site Visits Item 3 Settings ********** -->
+    <design:attribute name="siteVisits3Title" label="[4. SITE VISITS] ITEM 3 - Title" description="Title for site visit item 3" />
+    <design:attribute name="siteVisits3Desc" label="[4. SITE VISITS] ITEM 3 - Description" description="Description for site visit item 3" />
+    <design:attribute name="siteVisits3Icon" label="[4. SITE VISITS] ITEM 3 - Icon" description="Icon name for site visit item 3" />
+    <design:attribute name="siteVisits3ButtonLabel" label="[4. SITE VISITS] ITEM 3 - Button Label" description="Button label for site visit item 3" />
+    <design:attribute name="siteVisits3ButtonLink" label="[4. SITE VISITS] ITEM 3 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="siteVisits3DetailTitle" label="[4. SITE VISITS] ITEM 3 - Detail Title" description="Title for site visit item 3 detail section" />
+    <design:attribute name="siteVisits3DetailContent" label="[4. SITE VISITS] ITEM 3 - Detail Content" description="Detailed content for site visit item 3" />
+    
+    <!-- ============================================================ -->
+    <!-- ============== NO TOUCH ITEMS (AI COMPLETED) ============== -->
+    <!-- ============================================================ -->
+    
+    <!-- ********** No Touch Item 1 Settings ********** -->
+    <design:attribute name="noTouch1Title" label="[5. NO TOUCH] ITEM 1 - Title" description="Title for no-touch item 1" />
+    <design:attribute name="noTouch1Desc" label="[5. NO TOUCH] ITEM 1 - Description" description="Description for no-touch item 1" />
+    <design:attribute name="noTouch1Icon" label="[5. NO TOUCH] ITEM 1 - Icon" description="Icon name for no-touch item 1" />
+    <design:attribute name="noTouch1ShowButton" label="[5. NO TOUCH] ITEM 1 - Show Button" description="Whether to show button for no-touch item 1" />
+    <design:attribute name="noTouch1ButtonLabel" label="[5. NO TOUCH] ITEM 1 - Button Label" description="Button label for no-touch item 1" />
+    <design:attribute name="noTouch1ButtonLink" label="[5. NO TOUCH] ITEM 1 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="noTouch1DetailTitle" label="[5. NO TOUCH] ITEM 1 - Detail Title" description="Title for no-touch item 1 detail section" />
+    <design:attribute name="noTouch1DetailContent" label="[5. NO TOUCH] ITEM 1 - Detail Content" description="Detailed content for no-touch item 1" />
+    
+    <!-- ********** No Touch Item 2 Settings ********** -->
+    <design:attribute name="noTouch2Title" label="[5. NO TOUCH] ITEM 2 - Title" description="Title for no-touch item 2" />
+    <design:attribute name="noTouch2Desc" label="[5. NO TOUCH] ITEM 2 - Description" description="Description for no-touch item 2" />
+    <design:attribute name="noTouch2Icon" label="[5. NO TOUCH] ITEM 2 - Icon" description="Icon name for no-touch item 2" />
+    <design:attribute name="noTouch2ShowButton" label="[5. NO TOUCH] ITEM 2 - Show Button" description="Whether to show button for no-touch item 2" />
+    <design:attribute name="noTouch2ButtonLabel" label="[5. NO TOUCH] ITEM 2 - Button Label" description="Button label for no-touch item 2" />
+    <design:attribute name="noTouch2ButtonLink" label="[5. NO TOUCH] ITEM 2 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="noTouch2DetailTitle" label="[5. NO TOUCH] ITEM 2 - Detail Title" description="Title for no-touch item 2 detail section" />
+    <design:attribute name="noTouch2DetailContent" label="[5. NO TOUCH] ITEM 2 - Detail Content" description="Detailed content for no-touch item 2" />
+    
+    <!-- ********** No Touch Item 3 Settings ********** -->
+    <design:attribute name="noTouch3Title" label="[5. NO TOUCH] ITEM 3 - Title" description="Title for no-touch item 3" />
+    <design:attribute name="noTouch3Desc" label="[5. NO TOUCH] ITEM 3 - Description" description="Description for no-touch item 3" />
+    <design:attribute name="noTouch3Icon" label="[5. NO TOUCH] ITEM 3 - Icon" description="Icon name for no-touch item 3" />
+    <design:attribute name="noTouch3ShowButton" label="[5. NO TOUCH] ITEM 3 - Show Button" description="Whether to show button for no-touch item 3" />
+    <design:attribute name="noTouch3ButtonLabel" label="[5. NO TOUCH] ITEM 3 - Button Label" description="Button label for no-touch item 3" />
+    <design:attribute name="noTouch3ButtonLink" label="[5. NO TOUCH] ITEM 3 - Button Link" description="URL to navigate to when button is clicked" />
+    <design:attribute name="noTouch3DetailTitle" label="[5. NO TOUCH] ITEM 3 - Detail Title" description="Title for no-touch item 3 detail section" />
+    <design:attribute name="noTouch3DetailContent" label="[5. NO TOUCH] ITEM 3 - Detail Content" description="Detailed content for no-touch item 3" />
+</design:component>
