@@ -50,47 +50,8 @@
                                     <lightning-icon icon-name={item.icon} alternative-text="Item" size="small" class="item-icon"></lightning-icon>
                                 </div>
                                 <div class="item-content">
-                                    <div class="item-title-container">
-                                        <template if:false={isEditing('noTouch', index, 'title')}>
-                                            <h4 class="item-title editable-field" 
-                                                data-section="noTouch" 
-                                                data-index={index} 
-                                                data-field="title" 
-                                                data-value={item.title}
-                                                onclick={handleEditClick}>
-                                                {item.title}
-                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
-                                            </h4>
-                                        </template>
-                                        <template if:true={isEditing('noTouch', index, 'title')}>
-                                            <input type="text" 
-                                                   class="inline-edit-input" 
-                                                   value={editingValue}
-                                                   onchange={handleEditChange}
-                                                   onkeydown={handleEditSave}
-                                                   onblur={handleEditBlur} />
-                                        </template>
-                                    </div>
-                                    <div class="item-description-container">
-                                        <template if:false={isEditing('noTouch', index, 'description')}>
-                                            <p class="item-description editable-field"
-                                               data-section="noTouch" 
-                                               data-index={index} 
-                                               data-field="description" 
-                                               data-value={item.description}
-                                               onclick={handleEditClick}>
-                                                {item.description}
-                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
-                                            </p>
-                                        </template>
-                                        <template if:true={isEditing('noTouch', index, 'description')}>
-                                            <textarea class="inline-edit-input" 
-                                                      value={editingValue}
-                                                      onchange={handleEditChange}
-                                                      onkeydown={handleEditSave}
-                                                      onblur={handleEditBlur}></textarea>
-                                        </template>
-                                    </div>
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <p class="item-description">{item.description}</p>
                                 </div>
                                 <div if:true={item.showButton} class="item-actions">
                                     <lightning-button variant="brand" 
@@ -127,47 +88,8 @@
                                     <lightning-icon icon-name={item.icon} alternative-text="Item" size="small" class="item-icon"></lightning-icon>
                                 </div>
                                 <div class="item-content">
-                                    <div class="item-title-container">
-                                        <template if:false={isEditing('lowTouch', index, 'title')}>
-                                            <h4 class="item-title editable-field" 
-                                                data-section="lowTouch" 
-                                                data-index={index} 
-                                                data-field="title" 
-                                                data-value={item.title}
-                                                onclick={handleEditClick}>
-                                                {item.title}
-                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
-                                            </h4>
-                                        </template>
-                                        <template if:true={isEditing('lowTouch', index, 'title')}>
-                                            <input type="text" 
-                                                   class="inline-edit-input" 
-                                                   value={editingValue}
-                                                   onchange={handleEditChange}
-                                                   onkeydown={handleEditSave}
-                                                   onblur={handleEditBlur} />
-                                        </template>
-                                    </div>
-                                    <div class="item-description-container">
-                                        <template if:false={isEditing('lowTouch', index, 'description')}>
-                                            <p class="item-description editable-field"
-                                               data-section="lowTouch" 
-                                               data-index={index} 
-                                               data-field="description" 
-                                               data-value={item.description}
-                                               onclick={handleEditClick}>
-                                                {item.description}
-                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
-                                            </p>
-                                        </template>
-                                        <template if:true={isEditing('lowTouch', index, 'description')}>
-                                            <textarea class="inline-edit-input" 
-                                                      value={editingValue}
-                                                      onchange={handleEditChange}
-                                                      onkeydown={handleEditSave}
-                                                      onblur={handleEditBlur}></textarea>
-                                        </template>
-                                    </div>
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <p class="item-description">{item.description}</p>
                                 </div>
                                 <div if:true={item.showButton} class="item-actions">
                                     <lightning-button variant="brand" 
@@ -204,47 +126,8 @@
                                     <lightning-icon icon-name={item.icon} alternative-text="Item" size="small" class="item-icon"></lightning-icon>
                                 </div>
                                 <div class="item-content">
-                                    <div class="item-title-container">
-                                        <template if:false={isEditing('highTouch', index, 'title')}>
-                                            <h4 class="item-title editable-field" 
-                                                data-section="highTouch" 
-                                                data-index={index} 
-                                                data-field="title" 
-                                                data-value={item.title}
-                                                onclick={handleEditClick}>
-                                                {item.title}
-                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
-                                            </h4>
-                                        </template>
-                                        <template if:true={isEditing('highTouch', index, 'title')}>
-                                            <input type="text" 
-                                                   class="inline-edit-input" 
-                                                   value={editingValue}
-                                                   onchange={handleEditChange}
-                                                   onkeydown={handleEditSave}
-                                                   onblur={handleEditBlur} />
-                                        </template>
-                                    </div>
-                                    <div class="item-description-container">
-                                        <template if:false={isEditing('highTouch', index, 'description')}>
-                                            <p class="item-description editable-field"
-                                               data-section="highTouch" 
-                                               data-index={index} 
-                                               data-field="description" 
-                                               data-value={item.description}
-                                               onclick={handleEditClick}>
-                                                {item.description}
-                                                <lightning-icon icon-name="utility:edit" alternative-text="Edit" size="xx-small" class="edit-icon"></lightning-icon>
-                                            </p>
-                                        </template>
-                                        <template if:true={isEditing('highTouch', index, 'description')}>
-                                            <textarea class="inline-edit-input" 
-                                                      value={editingValue}
-                                                      onchange={handleEditChange}
-                                                      onkeydown={handleEditSave}
-                                                      onblur={handleEditBlur}></textarea>
-                                        </template>
-                                    </div>
+                                    <h4 class="item-title">{item.title}</h4>
+                                    <p class="item-description">{item.description}</p>
                                 </div>
                                 <div if:true={item.showButton} class="item-actions">
                                     <lightning-button variant="brand" 
@@ -423,7 +306,7 @@
                     <div class="component-info">
                         <p><strong>Version:</strong> v3 (Self-Contained)</p>
                         <p><strong>Persistence:</strong> Org-wide Custom Object storage</p>
-                        <p><strong>Editing:</strong> Click any content item to edit inline</p>
+                        <p><strong>Editing:</strong> Inline editing coming in next release</p>
                     </div>
                 </div>
             </div>

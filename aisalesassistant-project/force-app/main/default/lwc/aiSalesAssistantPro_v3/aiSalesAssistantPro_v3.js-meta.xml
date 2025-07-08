@@ -9,9 +9,5 @@
         <target>lightning__AppPage</target>
         <target>lightning__Tab</target>
     </targets>
-    <targetConfigs>
-        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage">
-            <!-- No design attributes needed - component is fully self-contained -->
-        </targetConfig>
-    </targetConfigs>
+    <!-- No targetConfigs needed - component is fully self-contained -->
 </LightningComponentBundle> 

@@ -4,7 +4,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import generateAIContent from '@salesforce/apex/AIContentGeneratorService.generateAIContent';
 import getCurrentConfig from '@salesforce/apex/AISalesAssistantConfigService.getCurrentConfig';
 import saveAIContent from '@salesforce/apex/AISalesAssistantConfigService.saveAIContent';
-import updateContentItem from '@salesforce/apex/AISalesAssistantConfigService.updateContentItem';
+// import updateContentItem from '@salesforce/apex/AISalesAssistantConfigService.updateContentItem'; // For future inline editing
 import resetToDefaults from '@salesforce/apex/AISalesAssistantConfigService.resetToDefaults';
 
 export default class AiSalesAssistantPro_v3 extends NavigationMixin(LightningElement) {
@@ -65,10 +65,7 @@ export default class AiSalesAssistantPro_v3 extends NavigationMixin(LightningEle
     @track hasCustomContent = false;
     @track configInfo = null;
     
-    // Inline editing
-    @track editingItem = null;
-    @track editingField = null;
-    @track editingValue = '';
+    // Future: Inline editing functionality will be added in next version
     
     // Lifecycle
     async connectedCallback() {
@@ -180,75 +177,7 @@ export default class AiSalesAssistantPro_v3 extends NavigationMixin(LightningEle
         }
     }
     
-    // Inline Editing
-    handleEditClick(event) {
-        const section = event.target.dataset.section;
-        const itemIndex = parseInt(event.target.dataset.index);
-        const field = event.target.dataset.field;
-        const currentValue = event.target.dataset.value;
-        
-        this.editingItem = `${section}_${itemIndex}`;
-        this.editingField = field;
-        this.editingValue = currentValue;
-        
-        // Focus on the input after render
-        setTimeout(() => {
-            const input = this.template.querySelector('.inline-edit-input');
-            if (input) {
-                input.focus();
-                input.select();
-            }
-        }, 100);
-    }
-    
-    handleEditSave(event) {
-        if (event.key === 'Enter') {
-            this.saveInlineEdit();
-        } else if (event.key === 'Escape') {
-            this.cancelInlineEdit();
-        }
-    }
-    
-    handleEditBlur() {
-        this.saveInlineEdit();
-    }
-    
-    handleEditChange(event) {
-        this.editingValue = event.target.value;
-    }
-    
-    async saveInlineEdit() {
-        if (!this.editingItem || !this.editingField) return;
-        
-        try {
-            const [section, itemIndex] = this.editingItem.split('_');
-            const index = parseInt(itemIndex);
-            
-            await updateContentItem({
-                section,
-                itemIndex: index,
-                field: this.editingField,
-                value: this.editingValue
-            });
-            
-            // Update local state
-            this.contentData[section][index][this.editingField] = this.editingValue;
-            
-            this.showToast('Saved', 'Content updated successfully', 'success');
-            
-        } catch (error) {
-            console.error('Error saving inline edit:', error);
-            this.showToast('Save Error', 'Could not save changes: ' + error.message, 'error');
-        } finally {
-            this.cancelInlineEdit();
-        }
-    }
-    
-    cancelInlineEdit() {
-        this.editingItem = null;
-        this.editingField = null;
-        this.editingValue = '';
-    }
+    // Future: Inline editing methods will be added in next version
     
     // Reset functionality
     async handleResetToDefaults() {
@@ -278,6 +207,11 @@ export default class AiSalesAssistantPro_v3 extends NavigationMixin(LightningEle
     
     handleComponentSettingsClose() {
         this.showComponentSettingsModal = false;
+    }
+    
+    handleModalClick(event) {
+        // Prevent modal from closing when clicking inside the modal content
+        event.stopPropagation();
     }
     
     handleCustomerContextChange(event) {
@@ -479,7 +413,5 @@ export default class AiSalesAssistantPro_v3 extends NavigationMixin(LightningEle
         }
     }
     
-    isEditing(section, itemIndex, field) {
-        return this.editingItem === `${section}_${itemIndex}` && this.editingField === field;
-    }
+
 } 
